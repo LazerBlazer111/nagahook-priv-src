@@ -159,64 +159,6 @@ int MakeHitscan(C_BaseEntity* entity)
             hitboxes.push_back(HITBOX_LOWER_CHEST);
             hitboxes.push_back(HITBOX_UPPER_CHEST);
         }
-        if (vars.aimbot.hitscantype == HITSCAN::head){
-            hitboxes.push_back(HITBOX_HEAD);
-        }
-        if (vars.aimbot.hitscantype == HITSCAN::upperbody){
-            hitboxes.push_back(HITBOX_HEAD);
-             hitboxes.push_back(HITGROUP_STOMACH);
-             hitboxes.push_back(HITBOX_PELVIS);
-        }
-        if (vars.aimbot.hitscantype == HITSCAN::lowerbody){
-            hitboxes.push_back(HITBOX_LOWER_CHEST);
-            hitboxes.push_back(HITGROUP_STOMACH);
-            hitboxes.push_back(HITBOX_PELVIS);
-            hitboxes.push_back(HITBOX_LEFT_THIGH);
-            hitboxes.push_back(HITBOX_RIGHT_THIGH);
-            hitboxes.push_back(HITBOX_RIGHT_FOOT);
-            hitboxes.push_back(HITBOX_LEFT_FOOT);
-            hitboxes.push_back(HITBOX_RIGHT_UPPER_ARM);
-            hitboxes.push_back(HITBOX_LEFT_UPPER_ARM);
-            hitboxes.push_back(HITBOX_RIGHT_FOREARM);
-            hitboxes.push_back(HITBOX_LEFT_FOREARM);
-            hitboxes.push_back(HITBOX_RIGHT_HAND);
-            hitboxes.push_back(HITBOX_LEFT_HAND);
-        }
-        if (vars.aimbot.hitscantype == HITSCAN::arms){
-            hitboxes.push_back(HITBOX_RIGHT_UPPER_ARM);
-            hitboxes.push_back(HITBOX_LEFT_UPPER_ARM);
-            hitboxes.push_back(HITBOX_RIGHT_FOREARM);
-            hitboxes.push_back(HITBOX_LEFT_FOREARM);
-            hitboxes.push_back(HITBOX_RIGHT_HAND);
-            hitboxes.push_back(HITBOX_LEFT_HAND);
-        }
-        if (vars.aimbot.hitscantype == HITSCAN::legs){
-            hitboxes.push_back(HITBOX_PELVIS);
-            hitboxes.push_back(HITBOX_LEFT_THIGH);
-            hitboxes.push_back(HITBOX_RIGHT_THIGH);
-            hitboxes.push_back(HITBOX_RIGHT_FOOT);
-            hitboxes.push_back(HITBOX_LEFT_FOOT);
-        }
-        if(vars.aimbot.hitscantype == HITSCAN::baimlowerbody){
-            hitboxes.push_back(HITBOX_LOWER_CHEST);
-            hitboxes.push_back(HITGROUP_STOMACH);
-            hitboxes.push_back(HITBOX_PELVIS);
-            hitboxes.push_back(HITBOX_LEFT_THIGH);
-            hitboxes.push_back(HITBOX_RIGHT_THIGH);
-            hitboxes.push_back(HITBOX_RIGHT_FOOT);
-            hitboxes.push_back(HITBOX_LEFT_FOOT);
-            hitboxes.push_back(HITBOX_RIGHT_UPPER_ARM);
-            hitboxes.push_back(HITBOX_LEFT_UPPER_ARM);
-            hitboxes.push_back(HITBOX_RIGHT_FOREARM);
-            hitboxes.push_back(HITBOX_LEFT_FOREARM);
-            hitboxes.push_back(HITBOX_RIGHT_HAND);
-            hitboxes.push_back(HITBOX_LEFT_HAND);
-            hitboxes.push_back(HITBOX_BELLY);
-            hitboxes.push_back(HITBOX_THORAX);
-            hitboxes.push_back(HITBOX_UPPER_CHEST);
-            hitboxes.push_back(HITBOX_RIGHT_CALF);
-            hitboxes.push_back(HITBOX_LEFT_CALF);
-        }
     }
 
     
