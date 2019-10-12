@@ -1,9 +1,7 @@
 #include "../main.h"
-#include "../Hacks/skinchanger.hpp"
 
 bool hkFireEventClientSide(void* thisptr, IGameEvent* event){
     
-    skinchanger->FireEventClientSide(event);
 
     return game_event_vmt->GetOriginalMethod<tFireGameEvent>(11)(thisptr, event);
 }
