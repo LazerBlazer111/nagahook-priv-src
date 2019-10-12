@@ -180,6 +180,8 @@ struct COffsets
 namespace Offsets
 {
 	void getOffsets();
+    extern uintptr_t playerAnimStateOffset;
+   extern unsigned int playerAnimOverlayOffset;
 }
 
 extern COffsets offsets;

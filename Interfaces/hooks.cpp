@@ -1,5 +1,5 @@
 #include "main.h"
-#include "skinchanger.h"
+#include "skinconfigchanger.hpp"
 #include "index.h"
 #include "../EventListener.h"
 EventListener* eventlistener = nullptr;
@@ -15,7 +15,7 @@ void InitializeInterfaces()
     pClient         = GetInterface<IBaseClientDLL>("./csgo/bin/osx64/client_panorama.dylib", "VClient");
     pEngine         = GetInterface<IEngineClient>("./bin/osx64/engine.dylib", "VEngineClient");
     pEntList        = GetInterface<IClientEntityList>("./csgo/bin/osx64/client_panorama.dylib", "VClientEntityList");
-    pOverlay        = GetInterface<IVDebugOverlay>("./bin/osx64/engine.dylib", "VDebugOverlay004", true);
+    pOverlay        = GetInterface<IVDebugOverlay>("./bin/osx64/engine.dylib", "VDebugOverlay");
     pEngineTrace    = GetInterface<IEngineTrace>("./bin/osx64/engine.dylib", "EngineTraceClient");
     pModelInfo      = GetInterface<IVModelInfo>("./bin/osx64/engine.dylib", "VModelInfoClient");
     pInputSystem    = GetInterface<IInputSystem>("./bin/osx64/inputsystem.dylib", "InputSystemVersion");
@@ -23,16 +23,14 @@ void InitializeInterfaces()
     pMatSystem      = GetInterface<IMaterialSystem>("./bin/osx64/materialsystem.dylib", "VMaterialSystem");
     pPrediction     = GetInterface<IPrediction>("./csgo/bin/osx64/client_panorama.dylib", "VClientPrediction");
     pEngineGUI      = GetInterface<IEngineVGui>("./bin/osx64/engine.dylib", "VEngineVGui");
-   // sound           = GetInterface<IEngineSound>("./bin/osx64/engine.dylib", "IEngineSoundClient");
     pGameMovement   = GetInterface<IGameMovement>("./csgo/bin/osx64/client_panorama.dylib", "GameMovement");
-    //fileSystem      = GetInterface<IFileSystem>("./bin/osx64/filesystem_stdio.dylib", "VFileSytem");
-    //glowManager     = GetInterface<CGlowObjectManager>("<#const char *filename#>", "<#const char *version#>")
     pPhysics        = GetInterface<IPhysicsSurfaceProps>("./bin/osx64/vphysics.dylib", "VPhysicsSurfaceProps");
     pGameEventManager = GetInterface<IGameEventManager2>("./bin/osx64/engine.dylib", "GAMEEVENTSMANAGER002", true);
     eventlistener = new EventListener({ "cs_game_disconnected", "player_connect_full", "player_death", "player_hurt", "bullet_impact", "round_start", "round_end", "weapon_fire", "switch_team", "player_death", "item_purchase", "item_remove", "item_pickup", "bomb_begindefuse", "enter_bombzone", "bomb_beginplant" });
     
     
 }
+uintptr_t Offsets::playerAnimStateOffset = *reinterpret_cast<uint32_t*>(CPatternScanner::Instance()->GetProcedure("client_panorama.dylib", (unsigned char*)"\x48\x8B\xBB\x00\x00\x00\x00\x48\x85\xFF\x74\x41\xE8\x00\x00\x00\x00\x4C", "xxx????xxxxxx????x", 0) +3);
 
 void ProtectAddr(void* addr, int prot)
 {
@@ -54,9 +52,8 @@ void InitializeVMTs()
 
     
     bSendPacket = reinterpret_cast<bool*>(sendPacketPtr);
-    ProtectAddr(bSendPacket, PROT_READ | PROT_WRITE | PROT_EXEC);
+    ProtectAddr(bSendPacket, 0x1 | 0x2 | 0x4);
     pInput = *reinterpret_cast<CInput**>(GetAbsoluteAddress(getvfunc<uintptr_t>(pClient, 16) + 4, 3, 7));
-    //glowManager = reinterpret_cast<GlowObjectManagerFn>(CPatternScanner::Instance()->GetProcedure("client_panorama.dylib", (unsigned char*)"\xE8\x00\x00\x00\x00\xC7\x40\x00\x00\x00\x00\x00\x48\x8D\x3D\x00\x00\x00\x00\xBE", "x????xx????xxxx????x", 0))();
     
     void* handle = dlopen("./csgo/bin/osx64/client_panorama.dylib", RTLD_NOLOAD | RTLD_NOW);
     RandomInt       = reinterpret_cast<RandomIntFn>(dlsym(handle, "RandomInt"));
@@ -70,26 +67,14 @@ void InitializeVMTs()
     MoveData = *reinterpret_cast<CMoveData**>(findMoveData);
     MsgFunc_ServerRankRevealAll = reinterpret_cast<MsgFunc_ServerRankRevealAllFn>(findRankReveal);
 
+    //engineVGUIvmt   = new VMT(pEngineGUI);
     paintVMT        = new VMT(pPanel);
     createmoveVMT   = new VMT(pClientMode);
     clientVMT       = new VMT(pClient);
     modelVMT        = new VMT(pModelRender);
     predVMT         = new VMT(pPrediction);
     game_event_vmt  = new VMT(pGameEventManager);
-    //soundVMT        = new VMT(sound);
-    //viewRenderVMT   = new VMT(viewRender);
     
-}
-
-uintptr_t hooker::FindPlayerAnimStateOffset()
-{
-    static uintptr_t animstateoffset;
-    if(!animstateoffset)
-    {
-        animstateoffset = *reinterpret_cast<uint32_t*>(CPatternScanner::Instance()->GetProcedure("client_panorama.dylib", (unsigned char*)"\x48\x8B\xBB\x00\x00\x00\x00\x48\x85\xFF\x74\x41\xE8\x00\x00\x00\x00\x4C", "xxx????xxxxxx????x", 0) +3);
-    }else{
-    }
-    return animstateoffset;
 }
 
 
@@ -104,7 +89,7 @@ void InitializeHooks()
     createmoveVMT->ApplyVMT();
     
     clientVMT->HookVM((void*)hkKeyEvent, 21);
-    clientVMT->HookVM((void*)hkFrameStage, FrameStageIndex);
+    clientVMT->HookVM((void*)hkFrameStage, 37);
     clientVMT->ApplyVMT();
     
     modelVMT->HookVM((void*)hkDrawModelExecute, 21);
@@ -117,12 +102,33 @@ void InitializeHooks()
     game_event_vmt->HookVM((void*)FireEvent_hk, 9);
     game_event_vmt->ApplyVMT();
     
-    //viewRenderVMT->HookVM((void*)RenderView, 6);
-    //viewRenderVMT->ApplyVMT();
+    //engineVGUIvmt->HookVM((void*)Paint, 15);
+    //engineVGUIvmt->ApplyVMT();
     
     g_pSequence = (RecvVarProxyFn)NetVarManager::HookProp("DT_BaseViewModel", "m_nSequence", HSequenceProxyFn);
 }
 
+
+void Unhook()
+{
+    game_event_vmt  ->ReleaseVMT();
+    paintVMT        ->ReleaseVMT();
+    createmoveVMT   ->ReleaseVMT();
+    clientVMT       ->ReleaseVMT();
+    modelVMT        ->ReleaseVMT();
+    predVMT         ->ReleaseVMT();
+    
+    delete game_event_vmt;
+    delete paintVMT;
+    delete createmoveVMT;
+    delete clientVMT;
+    delete modelVMT;
+    delete predVMT;
+    delete eventlistener;
+    
+    
+    pCvar->ConsoleColorPrintf(Color::Green(), "You have Successfully Unloaded Killers\n");
+}
 
 void UpdateResolver()
 {

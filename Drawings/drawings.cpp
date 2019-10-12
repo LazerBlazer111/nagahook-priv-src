@@ -446,10 +446,11 @@ void cDrawings::drawstring(int x, int y, Color color, HFONT font, const char *sz
 //=====================================
 
 
+
 void cDrawings::drawCrosshair(int x, int y, Color col) {
     
-    this->drawline(x - 5, y, x + 5, y, col);
-    this->drawline(x, y - 5, x, y + 5, col);
+    this->drawline(x - 5, y, x + 6, y, col);
+    this->drawline(x, y - 5, x, y + 6, col);
     
 }
 

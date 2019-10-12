@@ -1,7 +1,7 @@
 #pragma once
-#include "AnimLayer.h"
 #include "animstate.h"
-#include "../Interfaces/hooks.h"
+#include "AnimLayer.h"
+
 class CCSWeaponInfo;
 class KeyValues;
 class CHudTexture;
@@ -327,8 +327,7 @@ public:
     }
     CCSGOAnimState* GetAnimState()
     {
-        uintptr_t animstateoffset = hooker::FindPlayerAnimStateOffset();
-        return *reinterpret_cast<CCSGOAnimState**>((uintptr_t)this + animstateoffset);
+        return *reinterpret_cast<CCSGOAnimState**>((uintptr_t)this + Offsets::playerAnimStateOffset);
     }
     
     int GetId()
@@ -968,34 +967,34 @@ public:
         return *(float*)((uintptr_t)this + offsets.DT_WeaponCSBase.m_fAccuracyPenalty);
     }
     
-       CCSWeaponInfo* GetCSWpnData()
+    CCSWeaponInfo* GetCSWpnData()
     {
         typedef CCSWeaponInfo* (* oGetCSWpnData)(void*);
-        return getvfunc<oGetCSWpnData>(this, 522)(this);
+        return getvfunc<oGetCSWpnData>(this, 524)(this);
     }
     
     CCSSWeaponInfo* GetCSWpnData1()
     {
         typedef CCSSWeaponInfo* (* oGetCSWpnData)(void*);
-        return getvfunc<oGetCSWpnData>(this, 522)(this);
+        return getvfunc<oGetCSWpnData>(this, 524)(this);
     }
     
     float GetInaccuracy()
     {
         typedef float (* oGetInaccuracy)(void*);
-        return getvfunc<oGetInaccuracy>(this, 544)(this);
+        return getvfunc<oGetInaccuracy>(this, 546)(this);
     }
     
     float GetSpread()
     {
         typedef float (* oGetSpread)(void*);
-        return getvfunc<oGetSpread>(this, 514)(this);
+        return getvfunc<oGetSpread>(this, 516)(this);
     }
     
     void UpdateAccuracyPenalty()
     {
         typedef void (* oUpdateAccuracyPenalty)(void*);
-        return getvfunc<oUpdateAccuracyPenalty>(this, 545)(this);
+        return getvfunc<oUpdateAccuracyPenalty>(this, 547)(this);
     }
 
     

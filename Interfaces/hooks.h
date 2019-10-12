@@ -28,9 +28,3 @@ extern void PrintInfo();            //  Prints cheat info
 
 #define VIEWRENDER_SIG "\xE8\x00\x00\x00\x00\x48\x89\xDF\x48\x89\xC6\x41\xFF\xD7\xE8\x00\x00\x00\x00\x48"
 #define VIEWREDNER_MASK "x????xxxxxxxxxx????x"
-
-namespace hooker
-{
-    uintptr_t FindPlayerAnimStateOffset();
-    //CGlowObjectManager* FindGlowManager();
-}

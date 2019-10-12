@@ -3,22 +3,35 @@
 #include "../Hacks/autowall.h"
 #include "../Hacks/aimbot.h"
 
-// Thanks @pwned for fix
+Vector aim;
 
 static float GetHitgroupDamageMultiplier(HitGroups iHitGroup)
 {
     switch (iHitGroup)
     {
+        case HITGROUP_GENERIC:
+            return 1.f;
         case HITGROUP_HEAD:
             return 4.f;
+        case HITGROUP_CHEST:
+            return 1.f;
         case HITGROUP_STOMACH:
             return 1.25f;
+        case HITGROUP_LEFTARM:
+            return 1.f;
+        case HITGROUP_RIGHTARM:
+            return 1.f;
         case HITGROUP_LEFTLEG:
+            return 0.75f;
         case HITGROUP_RIGHTLEG:
             return 0.75f;
+        case HITGROUP_GEAR:
+            return 1.f;
+        default:
+            break;
     }
     
-    return 1.0f;
+    return 1.f;
 }
 
 static void ScaleDamage(HitGroups hitgroup, C_BasePlayer* enemy, float weapon_armor_ratio, float& current_damage)
@@ -181,6 +194,21 @@ static void TraceLine(Vector vecAbsStart, Vector vecAbsEnd, unsigned int mask, C
     pEngineTrace->TraceRay(ray, mask, &filter, ptr);
 }
 
+bool VectortoVectorVisible(Vector src, Vector point)
+{
+    C_BasePlayer* localplayer = (C_BasePlayer*) pEntList->GetClientEntity(pEngine->GetLocalPlayer());
+    
+    trace_t Trace;
+    TraceLine(src, point, MASK_SOLID, localplayer, &Trace);
+    
+    if (Trace.fraction == 1.0f)
+    {
+        return true;
+    }
+    
+    return false;
+}
+
 static bool SimulateFireBullet(C_BaseCombatWeapon* pWeapon, bool teamCheck, Autowall::FireBulletData& data)
 {
     C_BasePlayer* localplayer = (C_BasePlayer*) pEntList->GetClientEntity(pEngine->GetLocalPlayer());
@@ -209,7 +237,7 @@ static bool SimulateFireBullet(C_BaseCombatWeapon* pWeapon, bool teamCheck, Auto
         if (data.enter_trace.fraction == 1.0f)
             break;
         
-        if (data.enter_trace.hitgroup <= HitGroups::HITGROUP_RIGHTLEG && data.enter_trace.hitgroup > HitGroups::HITGROUP_GENERIC)
+        if (data.enter_trace.hitgroup <= 7 && data.enter_trace.hitgroup > 0)
         {
             data.trace_length += data.enter_trace.fraction * data.trace_length_remaining;
             data.current_damage *= powf(weaponInfo->m_flRangeModifier, data.trace_length * 0.002f);
@@ -256,3 +284,6 @@ float Autowall::GetDamage(const Vector& point, bool teamCheck, FireBulletData& f
     
     return damage;
 }
+
+
+

@@ -6,11 +6,10 @@
 //  Copyright © 2019 ViKiNG. All rights reserved.
 //
 
-#include "namestealer.hpp"
+#include "namechanger.hpp"
 
-void NameStealer::SetName(const char* name)
-{
+void ChangeName(const char* szName) {
     ConVar* cvar_name = pCvar->FindVar("name");
-    cvar_name->fnChangeCallback = 0;
-    cvar_name->SetValue(name);
+    *(int*)((uintptr_t)&cvar_name->fnChangeCallback + 0x15) = 0;
+    cvar_name->SetValue(szName);
 }

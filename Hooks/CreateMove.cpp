@@ -7,22 +7,18 @@
 #include "../Hacks/clantag.h"
 #include "../Hacks/spammer.h"
 #include "../Hacks/fakewalk.h"
-#include "../Hacks/LagComp.h"
 #include "../Backtrack.hpp"
 #include "../moonwalk.hpp"
 #include "../Hacks/triggerbot.hpp"
 #include "../noduckcooldown.hpp"
 #include "../Hacks/EnginePrediction.h"
 #include "../Hacks/fakelag.hpp"
-#include "../Hacks/autostop.hpp"
 #include "../Hacks/legit.hpp"
 #include "../Hacks/logshots.hpp"
 #include "../Hacks/esp.h"
 #include "../Hacks/grenadeprediction.hpp"
-#include "../Hacks/showranks.hpp"
-#include "../Hacks/customglow.hpp"
-#include "../Hacks/autodefuse.hpp"
-#include "../Hacks/namestealer.hpp"
+#include "../Hacks/autoblock.hpp"
+#include "../Hacks/autoknife.hpp"
 #include "../Hacks/airstuck.hpp"
 
 Vector tpangles;
@@ -81,11 +77,10 @@ void hacks(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, Vecto
     tank(cmd, local);
     resolverfucker(cmd, local);
     DoAntiAimFake(cmd, local, weapon);
-    DoDesync(local, cmd, animState, weapon);
     DoLBYBreaker(local, cmd, animState, weapon);
     DoAntiaim(cmd, local, weapon, sendPacket, animState);
     doManual(cmd, local, weapon);
-    
+    DuckCool(cmd);
     StartPrediction(cmd);
     Airstuck::CreateMove(cmd);
     DoAim(cmd, local, weapon, flForwardmove, flSidemove, player);
@@ -99,11 +94,9 @@ void hacks(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, Vecto
     Hitchance(local, weapon);
     LogShots::CreateMove(cmd);
     EndPrediction();
-    
     CirlceStrafe(local, cmd, vOldAngles);
     Moonwalk(cmd);
     Autoblock::CreateMove(cmd);
-    AutoDefuse::CreateMove(cmd);
     AutoKnife::CreateMove(cmd);
     DoSpammer();
     
@@ -174,10 +167,24 @@ bool hkCreateMove(void* thisptr, float flSampleInput, CUserCmd* cmd)
     float forward = cmd->forwardmove;
     float sidemove = cmd->sidemove;
     float upmove = cmd->upmove;
+    if (vars.visuals.inverseragdoll)
+    {
+        if (!weapon->IsKnife())//!weapon->isKnife
+        {
+            pEngine->ExecuteClientCmd("cl_righthand 1");
+        
+        }else{
+        pEngine->ExecuteClientCmd("cl_righthand 0");
+        }
+    }
     
     if(pEngine->IsInGame() && pEngine->IsConnected())
     {
         hacks(cmd, local, weapon, vOldAngles, forward, sidemove, *bSendPacket, animState, player);
+        
+        if (vars.visuals.antiafkkick && cmd->command_number % 2){
+            cmd->buttons |= 1 << 26;
+        }
         
         
         FixMovement(vOldAngles, cmd);
@@ -206,10 +213,9 @@ bool hkCreateMove(void* thisptr, float flSampleInput, CUserCmd* cmd)
         bool *sendPacket = ((*(bool **)rbp) - 0x18);
         CreateMove::sendPacket =  true;
         
-        movement->FakeLag(cmd);
+        FakeLag(cmd);
         Fakewalk(cmd, local);
         
-        duck->DuckCool(cmd);
         
         *sendPacket = CreateMove::sendPacket;
 

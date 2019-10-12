@@ -71,6 +71,12 @@ public:
         
         bool LegitEnabled = false;
         
+        bool baim_high_inaccuracy = false;
+        
+        bool baim_in_air = false;
+        
+         bool baim_slow_walk = false;
+         int bodyaim_health = 0;
         bool legitHitscan = false;
          bool legitPistolHitscan = false;
          bool legitRifleHitscan = false;
@@ -117,11 +123,18 @@ public:
         int  FovToPlayer = 180;          // Aimbot Fov
         int  hitbox      = 0;            // Hitbox
         int  pointscale  = 80;           // Pointscale
+        int  bodyscale  = 80;           // Pointscale
         bool trigger     = false;        // Will shoot when an enemy is in your crosshair
         //bool prediction  = true;         // Player prediction
         bool autowall    = true;         // Shoots through walls if calulated damage is higher than set amount
         bool autodefuse    = false;         // Shoots through walls if calulated damage is higher than set amount
+        
          bool namestealer    = false;         // Shoots through walls if calulated damage is higher than set amount
+        bool hidename = false;
+        bool yourname = false;
+        bool fakevote = false;
+        bool fakeban = false;
+        
          int  nametype      = 0;            // Autowall min damage
         bool defusesilent    = false;         // Shoots through walls if calulated damage is higher than set amount
         bool autoaccept    = false;         // Shoots through walls if calulated damage is higher than set amount
@@ -162,6 +175,37 @@ public:
         bool visonly    = false;       // Visual only
         bool bullett    = false;       // Visual only
         bool box        = false;       // Box ESP
+        int CTcham_red = 0;
+        int CTcham_green = 0;
+        int CTcham_blue = 0;
+        int CTcham_alpha = 0;
+        
+        int Tcham_red = 0;
+        int Tcham_green = 0;
+        int Tcham_blue = 0;
+        int Tcham_alpha = 0;
+        
+        int weapon_red = 0;
+        int weapon_green = 0;
+        int weapon_blue = 0;
+        int weapon_alpha = 0;
+        
+        
+        int arm_red = 0;
+        int arm_green = 0;
+        int arm_blue = 0;
+        int arm_alpha = 0;
+
+        
+        int CTchamhid_red = 0;
+        int CTchamhid_green = 0;
+        int CTchamhid_blue = 0;
+        int CTchamhid_alpha = 0;
+        
+        int Tchamhid_red = 0;
+        int Tchamhid_green = 0;
+        int Tchamhid_blue = 0;
+        int Tchamhid_alpha = 0;
         bool name       = true;        // Name ESP
         bool health     = true;        // Health Bar
         bool healthtext = true;        // Health Text

@@ -4,16 +4,6 @@
 #pragma once
 #include "main.h"
 
-class CMovement
-{
-private:
     
+void FakeLag(CUserCmd* cmd);
     
-    
-public:
-    
-    void FakeLag(CUserCmd* cmd);
-    
-};
-
-extern CMovement* movement;

@@ -26,7 +26,6 @@ IGameMovement*      pGameMovement   = nullptr;
 //IFileSystem* fileSystem = nullptr;
 IPhysicsSurfaceProps* pPhysics      = nullptr;
 IGameEventManager2* pGameEventManager = nullptr;
-IEngineSound* sound = nullptr;
 INetChannelInfo*    nci             = nullptr;
 
 CMoveData* MoveData         = nullptr;
@@ -44,7 +43,7 @@ VMT* createmoveVMT;
 VMT* clientVMT;
 VMT* modelVMT;
 VMT* predVMT;
-VMT* materialVMT;
+VMT* engineVGUIvmt;
 VMT* game_event_vmt;
 //VMT* gameVMT;
 

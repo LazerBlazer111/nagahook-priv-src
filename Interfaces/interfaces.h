@@ -27,8 +27,9 @@ extern CEffects*            pEffects;
 extern IPanel*              pPanel;
 extern ICvar*               pCvar;
 extern IBaseClientDLL*      pClient;
-extern IEngineSound* sound;
 extern IClientEntityList*   pEntList;
+extern IVRenderView*        pRenderView;
+extern IVDebugOverlay*      pOverlay;
 extern IEngineVGui*         pEngineGUI;
 //extern IFileSystem* fileSystem;
 extern IEngineClient*       pEngine;
@@ -59,9 +60,8 @@ extern VMT* createmoveVMT;
 extern VMT* clientVMT;
 extern VMT* modelVMT;
 extern VMT* predVMT;
-extern VMT* materialVMT;
 extern VMT* game_event_vmt;
-
+extern VMT* engineVGUIvmt;
 extern VMT* gameEventsVMT;
 //extern VMT* viewRenderVMT;
 

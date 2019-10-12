@@ -3,9 +3,8 @@
 #include "fakelag.hpp"
 static int ticks = 0;
 int ticksMax = 16;
-CMovement* movement = new CMovement();
 
-void CMovement::FakeLag(CUserCmd *cmd) {
+void FakeLag(CUserCmd *cmd) {
     if (!vars.misc.fakelag)
         return;
     if(!pEngine->IsInGame())

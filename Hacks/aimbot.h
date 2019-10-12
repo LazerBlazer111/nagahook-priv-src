@@ -16,6 +16,7 @@ void AutoSlow(C_BasePlayer* player, C_BaseCombatWeapon* active_weapon, CUserCmd*
 namespace Aimbot
 {
     extern C_BaseEntity* curTarget;
+    extern std::vector<Hitbox> get_target_hitboxes(C_BaseEntity* entity);
 }
 
 

@@ -84,13 +84,13 @@ void hkPaintTraverse(void* thisptr, VPANEL panel, bool forceRepaint, bool allowF
         }
         
         {   // Initialisation
-            vars.colors.ctchams     = Color::White();
-            vars.colors.ctchams_ign = Color::Red();
+          //  vars.colors.ctchams     = Color::White();
+           // vars.colors.ctchams_ign = Color::Red();
             
             vars.colors.scopedchams = Color::White();
             
-            vars.colors.tchams      = Color::White();
-            vars.colors.tchams_ign  = Color::Red();
+           // vars.colors.tchams      = Color::White();
+           // vars.colors.tchams_ign  = Color::Red();
             
             vars.colors.tbox        = Color(18, 18, 18, 255);
             vars.colors.tbox_ign    = Color(18, 18, 18, 255);

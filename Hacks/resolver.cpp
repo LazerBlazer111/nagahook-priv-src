@@ -2,40 +2,8 @@
 #include "antiaim.h"
 #include <array>
 #include "resolver.h"
-RecvVarProxyFn OldProxy_Y; //OldProxy_X;
+RecvVarProxyFn OldProxy_Y;
 
-// Pitch Resolver
-/*
- float AAA_Pitch(C_BaseEntity* entity){
- int index = entity->GetIndex();
- float angle = gCorrections[index].x;
- 
- angle = 89;
- }
- */
-
-
-
-float get_average_lby_standing_update_delta(C_BaseEntity* entity) {
-    static float last_update_time[64];
-    static float second_laste_update_time[64];
-    static float oldlowerbody[64];
-    int index = entity->GetIndex();
-    float angle = gCorrections[index].y;
-    float lby = static_cast<int>(fabs(angle - entity->GetLowerBodyYawTarget()));
-    
-    if (lby != oldlowerbody[entity->GetIndex()]) {
-        second_laste_update_time[entity->GetIndex()] = last_update_time[entity->GetIndex()];
-        last_update_time[entity->GetIndex()] = pGlobals->curtime;
-        oldlowerbody[entity->GetIndex()] = lby;
-    }
-    
-    return last_update_time[entity->GetIndex()] - second_laste_update_time[entity->GetIndex()];
-}
-
-bool lby_keeps_updating() {
-    return get_average_lby_standing_update_delta;
-}
 
 
 float AAA_Yaw(C_BaseEntity* entity)
@@ -148,6 +116,7 @@ float AAA_Yaw(C_BaseEntity* entity)
                 
             }
         }
+        return angle;
     }
 
     if(vars.aimbot.yresolve == 2){//lby(same as rev pre much)
@@ -375,10 +344,11 @@ float AAA_Yaw(C_BaseEntity* entity)
                     }
                 }
             }
+            return angle;
         }
         if(vars.aimbot.yresolve == 3){//lby(same as rev pre much)
             
-#define RandomFloat(min, max) (rand() % (max - min + 1) + min)
+            #define RandomFloat(min, max) (rand() % (max - min + 1) + min)
             
             auto index = entity->GetIndex();
             
@@ -435,13 +405,13 @@ float AAA_Yaw(C_BaseEntity* entity)
                     if (is_fakewalk)
                     {
                         
-                        if (deltadif && (cur, 10))
+                        if (deltadif && ((cur) && 10))
                         {
                             new_yaw = entity->GetLowerBodyYawTarget();
                             //Delta Changes
                             ResolverStage[index] = 2;
                         }
-                        else if (entity->GetLowerBodyYawTarget() && (cur, 10))
+                        else if (entity->GetLowerBodyYawTarget() && ((cur) && 10))
                         {
                             new_yaw = entity->GetLowerBodyYawTarget();
                             //Lowerbody Changes
@@ -485,12 +455,12 @@ float AAA_Yaw(C_BaseEntity* entity)
                             }
                             else
                             {
-                                if (deltadif && (cur, 10))
+                                if (deltadif && ((cur) && 10))
                                 {
                                     new_yaw = deltas[entity->GetIndex()];
                                     ResolverStage[index] = 2;
                                 }
-                                else if (entity->GetLowerBodyYawTarget() && (cur, 10))
+                                else if (entity->GetLowerBodyYawTarget() && ((cur) && 10))
                                 {
                                     new_yaw = entity->GetLowerBodyYawTarget();
                                     ResolverStage[index] = 3;
@@ -679,27 +649,8 @@ float AAA_Yaw(C_BaseEntity* entity)
         else{
             angle = entity->GetLowerBodyYawTarget();
         }
+        return angle;
     }
-    if(vars.aimbot.yresolve == 7){
-        float movinglby[64];
-        float lbytomovinglbydelta[64]; // long name idk what else to put
-        bool onground = entity->GetFlags() & FL_ONGROUND;
-        lbytomovinglbydelta[entity->GetIndex()] = entity->GetLowerBodyYawTarget() - lbytomovinglbydelta[entity->GetIndex()];
-        
-        if (entity->GetVelocity().Length2D() > 6 && entity->GetVelocity().Length2D() < 42) { // shitty ayyware fakewalk check better than nothing.
-             entity->GetEyeAngles()->y = entity->GetLowerBodyYawTarget() + 180;
-        }
-        else if (entity->GetVelocity().Length2D() < 6 || entity->GetVelocity().Length2D() > 42) { // they are moving
-            entity->GetEyeAngles()->y = entity->GetLowerBodyYawTarget();
-            movinglby[entity->GetIndex()] = entity->GetLowerBodyYawTarget();
-        }
-        else if (lbytomovinglbydelta[entity->GetIndex()] > 50 && lbytomovinglbydelta[entity->GetIndex()] < -50) {// the 50 will allow you to have a 30 degree margin of error (do the math :))
-            entity->GetEyeAngles()->y = movinglby[entity->GetIndex()];
-        }
-        else
-            entity->GetEyeAngles()->y = entity->GetLowerBodyYawTarget();
-    }
-    return angle;
 }
 
 
@@ -781,56 +732,3 @@ void Resolver::FrameStageNotify(ClientFrameStage_t stage, C_BaseEntity* entity)
 void Resolver::PostFrameStageNotify(ClientFrameStage_t stage)
 {
 }
-
-/*void Resolver1::FrameStageNotify1(ClientFrameStage_t stage, C_BaseEntity* entity)
-{
-    if (!pEngine->IsInGame())
-        return;
-    
-    C_BasePlayer* localplayer = (C_BasePlayer*) pEntList->GetClientEntity(pEngine->GetLocalPlayer());
-    if (!localplayer)
-        return;
-    
-    //static std::array<int, 64> oldMissedShots = { 0 };
-    //extern std::array<int, 64> missedShots;
-    if (stage == ClientFrameStage_t::FRAME_NET_UPDATE_POSTDATAUPDATE_START)
-    {
-        for (int i = 1; i < pEngine->GetMaxClients(); ++i)
-        {
-            C_BasePlayer* player = (C_BasePlayer*) pEntList->GetClientEntity(i);
-           
-           
-            
-            if (!player
-                || player == localplayer
-                || player->GetDormant()
-                || !player->GetAlive()
-                || player->GetImmune()
-                || player->GetTeam() == localplayer->GetTeam())
-                continue;
-            
-            //player_info_t entityInformation;
-            //spEngine->GetPlayerInfo(i, &entityInformation);
-             CCSGOAnimState* animState = player->GetAnimState();
-            
-            if (vars.aimbot.yresolve != 6)
-                continue;
-            float maxDelta = AntiAim::GetMaxxDelta(animState);
-            
-            //player_data.push_back(std::pair<C_BasePlayer*, QAngle>(player, *player->GetEyeAngles()));
-            
-            //player->GetEyeAngles()->y = *player->GetLowerBodyYawTarget();
-            entity->GetEyeAngless()->y = (rand() % 2) ?
-            entity->GetEyeAngless()->y + (maxDelta * 0.66f) :
-            entity->GetEyeAngless()->y - (maxDelta * 0.66f);
-        }
-    }
-    else if (stage == ClientFrameStage_t::FRAME_RENDER_END)
-    {
-    
-    }
-}
-
-void Resolver1::PostFrameStageNotify1(ClientFrameStage_t stage)
-{
-}*/

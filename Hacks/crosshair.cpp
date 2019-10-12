@@ -76,18 +76,22 @@ void manualaa(C_BaseEntity* Local, int keynum)
     if(!pEngine->IsInGame() && !pEngine->IsConnected())
         return;
     
-    static bool left = false;
-    static bool right = false;
     
-    
-    static bool switchside = false;
-    static float resttime;
-    //int SwitchSideKey = KEY_SLASH;
-    if (pInputSystem->IsButtonDown(KEY_SLASH) && abs(resttime - pGlobals->curtime) > 0.5)
-    {
-        switchside = !switchside;
-        resttime = pGlobals->curtime;
-    }
+    static bool switchsideleft = false;
+       static bool switchsideright = false;
+       static float resttime;
+       static float resttime1;
+       //int SwitchSideKey = KEY_SLASH;
+       if (pInputSystem->IsButtonDown(KEY_LEFT) && abs(resttime - pGlobals->curtime) > 0.5)
+       {
+           switchsideleft = !switchsideleft;
+           resttime = pGlobals->curtime;
+       }
+       if (pInputSystem->IsButtonDown(KEY_RIGHT) && abs(resttime1 - pGlobals->curtime) > 0.5)
+       {
+           switchsideright = !switchsideright;
+           resttime1 = pGlobals->curtime;
+       }
     
     int Height, Width;
     pEngine->GetScreenSize(Height, Width);
@@ -97,17 +101,14 @@ void manualaa(C_BaseEntity* Local, int keynum)
     
      //cmd->viewangles.y += (switchside) ? -90 : 90;
     
-    left = (switchside) ?  true : false;
-    right = (switchside) ? false : true;
-    
     if(vars.visuals.indicatorAA_types == 1){
         
-        if( right  )
+        if( switchsideleft  )
         {
             draw->drawstring(25, 600, Color(255, 0, 0, 255), copyright, ("LEFT"));
         }
         
-        if( left )
+        if( switchsideright )
         {
             draw->drawstring(25, 600, Color(255, 0, 0, 255), copyright, ("RIGHT"));
         }
@@ -116,12 +117,12 @@ void manualaa(C_BaseEntity* Local, int keynum)
     if(vars.visuals.indicatorAA_types == 2){
         
         
-        if( left  ) {
+        if( switchsideleft  ) {
             draw->drawstring(y + 40, x, Color(255, 0, 0, 125), indicatorFont, ("B")); // Blue
             draw->drawstring(y - 60, x, Color(192, 192, 192, 125), indicatorFont, ("A")); // White
         }
         
-        if( right ){
+        if( switchsideright ){
             draw->drawstring(y + 40, x, Color(192, 192, 192, 125), indicatorFont, ("B")); // White
             draw->drawstring(y - 60, x, Color(255, 0, 0, 125), indicatorFont, ("A")); // Blue
         }

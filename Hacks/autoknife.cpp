@@ -1,4 +1,4 @@
-#include "customglow.hpp"
+#include "autoknife.hpp"
 //bool Settings::AutoKnife::enabled = false;
 //bool Settings::AutoKnife::Filters::enemies = true;
 //bool Settings::AutoKnife::Filters::allies = false;

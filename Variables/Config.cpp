@@ -16,13 +16,13 @@ Skins skin;
 const char* ConfigName;
 string user     = getenv("USER");
 string dsk      = "/Users/" + user + "/Desktop/";
-string fdr      = "/Users/" + user + "/Desktop/Nagahook";
-string scout    = "/Users/" + user + "/Desktop/Nagahook/scout.ini";
-string autos    = "/Users/" + user + "/Desktop/Nagahook/autos.ini";
-string legit    = "/Users/" + user + "/Desktop/Nagahook/legit.ini";
-string smg    = "/Users/" + user + "/Desktop/Nagahook/smg.ini";
-string rifles    = "/Users/" + user + "/Desktop/Nagahook/rifles.ini";
-string skins    = "/Users/" + user + "/Desktop/Nagahook/skins.ini";
+string fdr      = "/Users/" + user + "/Desktop/killers";
+string scout    = "/Users/" + user + "/Desktop/killers/scout.ini";
+string autos    = "/Users/" + user + "/Desktop/killers/autos.ini";
+string legit    = "/Users/" + user + "/Desktop/killers/legit.ini";
+string smg    = "/Users/" + user + "/Desktop/killers/smg.ini";
+string rifles    = "/Users/" + user + "/Desktop/killers/rifles.ini";
+string skins    = "/Users/" + user + "/Desktop/killers/skins.ini";
 
 bool GetBoolValue(bool Value)
 {
@@ -118,6 +118,13 @@ void Config::LoadConfig() {
     vars.misc.aaX     = cfgget_i("Misc", "aaX");
     //vars.aimbot.backtrack      = cfgget_i("Aimbot", "Backtrack");
     vars.aimbot.pointscale     = cfgget_i("Aimbot", "Pointscale");
+    vars.aimbot.bodyscale     = cfgget_i("Aimbot", "Body Scale");
+    
+    vars.aimbot.baim_high_inaccuracy     = cfgget_b("Aimbot", "Baim high innacuracy");
+    vars.aimbot.bodyaim_health     = cfgget_f("Aimbot", "Baim health");
+    vars.aimbot.baim_in_air     = cfgget_b("Aimbot", "Baim in air");
+    vars.aimbot.baim_slow_walk     = cfgget_b("Aimbot", "Baim slow walk");
+    
     vars.misc.aaY     = cfgget_i("Misc", "aaY");
     vars.misc.FaaY     = cfgget_i("Misc", "FaaY");
     vars.misc.MaaY     = cfgget_i("Misc", "MaaY");
@@ -289,6 +296,31 @@ void Config::LoadConfig() {
     
     vars.aimbot.autodefuse = cfgget_b("Misc", "Autodefuse");
     vars.aimbot.defusesilent = cfgget_b("Misc", "Silentdefuse");
+    
+    vars.visuals.CTcham_red           = cfgget_f("Colors", "CT Visible Chams.R");
+       vars.visuals.CTcham_green         = cfgget_f("Colors", "CT Visible Chams.G");
+       vars.visuals.CTcham_blue          = cfgget_f("Colors", "CT Visible Chams.B");
+       
+       vars.visuals.CTchamhid_red        = cfgget_f("Colors", "CT Hidden Chams.R");
+       vars.visuals.CTchamhid_green      = cfgget_f("Colors", "CT Hidden Chams.G");
+       vars.visuals.CTchamhid_blue       = cfgget_f("Colors", "CT Hidden Chams.B");
+       
+       vars.visuals.Tcham_red           = cfgget_f("Colors", "T Visible Chams.R");
+       vars.visuals.Tcham_green         = cfgget_f("Colors", "T Visible Chams.G");
+       vars.visuals.Tcham_blue          = cfgget_f("Colors", "T Visible Chams.B");
+       
+       vars.visuals.Tchamhid_red        = cfgget_f("Colors", "T Hidden Chams.R");
+       vars.visuals.Tchamhid_green      = cfgget_f("Colors", "T Hidden Chams.G");
+       vars.visuals.Tchamhid_blue       = cfgget_f("Colors", "T Hidden Chams.B");
+       
+     
+       vars.visuals.arm_red           = cfgget_f("Colors", "Arm.R");
+       vars.visuals.arm_green         = cfgget_f("Colors", "Arm.G");
+       vars.visuals.arm_blue          = cfgget_f("Colors", "Arm.B");
+       
+       vars.visuals.weapon_red        = cfgget_f("Colors", "Weapon.R");
+       vars.visuals.weapon_green      = cfgget_f("Colors", "Weapon.G");
+       vars.visuals.weapon_blue       = cfgget_f("Colors", "Weapon.B");
     //Colours
     /*vars.colors.pchamr      = cfgget_f("Colours", "pChamr");
      vars.colors.pchamg      = cfgget_f("Colours", "pChamg");
@@ -541,32 +573,39 @@ void Config::SaveConfig() {
     cfg.SetBoolValue("Aimbot", "Radar", GetBoolValue(vars.misc.radar));
     cfg.SetBoolValue("Aimbot", "Baim", GetBoolValue(vars.aimbot.baimhp));
     cfg.SetLongValue("Aimbot", "Pointscale", GetIntValue(vars.aimbot.pointscale));
+    cfg.SetLongValue("Aimbot", "Bodyscale", GetIntValue(vars.aimbot.bodyscale));
     cfg.SetLongValue("Aimbot", "BaimxHP", GetIntValue(vars.aimbot.baimxhp));
+    cfg.SetBoolValue("Aimbot", "Baim in air", GetBoolValue(vars.aimbot.baim_in_air));
+    cfg.SetBoolValue("Aimbot", "Baim slow walk", GetBoolValue(vars.aimbot.baim_slow_walk));
+    cfg.SetBoolValue("Aimbot", "Baim high innaccuracy", GetBoolValue(vars.aimbot.baim_high_inaccuracy));
+    cfg.SetDoubleValue("Aimbot", "Baim health", GetFloatValue(vars.aimbot.bodyaim_health));
     cfg.SetDoubleValue("Misc", "ASUSA", GetFloatValue(vars.misc.asusalpha));
     
     
     
-    //cfg.SetDoubleValue("Misc", "Airstuck Key", GetFloatValue((int)vars.misc.airstuck));
-    
-    
-    //Colours
-    /*
-     cfg.SetDoubleValue("Colors", "pChamr", GetFloatValue(vars.colors.pchamr));
-     cfg.SetDoubleValue("Colors", "pChamg", GetFloatValue(vars.colors.pchamg));
-     cfg.SetDoubleValue("Colors", "pChamb", GetFloatValue(vars.colors.pchamb));
-     
-     cfg.SetDoubleValue("Colors", "boxr", GetFloatValue(vars.colors.boxr));
-     cfg.SetDoubleValue("Colors", "boxg", GetFloatValue(vars.colors.boxg));
-     cfg.SetDoubleValue("Colors", "boxb", GetFloatValue(vars.colors.boxb));
-     
-     cfg.SetDoubleValue("Colors", "cignr", GetFloatValue(vars.colors.pignr));
-     cfg.SetDoubleValue("Colors", "cigng", GetFloatValue(vars.colors.pigng));
-     cfg.SetDoubleValue("Colors", "cignb", GetFloatValue(vars.colors.pignb));
-     
-     cfg.SetDoubleValue("Colors", "bignr", GetFloatValue(vars.colors.bignr));
-     cfg.SetDoubleValue("Colors", "bigng", GetFloatValue(vars.colors.bigng));
-     cfg.SetDoubleValue("Colors", "bignb", GetFloatValue(vars.colors.bignb));
-     */
+     cfg.SetDoubleValue("Colors", "CT Visible Chams.R", GetFloatValue(vars.visuals.CTcham_red));
+       cfg.SetDoubleValue("Colors", "CT Visible Chams.G", GetFloatValue(vars.visuals.CTcham_green));
+       cfg.SetDoubleValue("Colors", "CT Visible Chams.B", GetFloatValue(vars.visuals.CTcham_blue));
+       
+       cfg.SetDoubleValue("Colors", "CT Hidden Chams.R", GetFloatValue(vars.visuals.CTchamhid_red));
+       cfg.SetDoubleValue("Colors", "CT Hidden Chams.G", GetFloatValue(vars.visuals.CTchamhid_blue));
+       cfg.SetDoubleValue("Colors", "CT Hidden Chams.B", GetFloatValue(vars.visuals.CTchamhid_green));
+       
+       cfg.SetDoubleValue("Colors", "T Visible Chams.R", GetFloatValue(vars.visuals.Tcham_red));
+       cfg.SetDoubleValue("Colors", "T Visible Chams.G", GetFloatValue(vars.visuals.CTcham_green));
+       cfg.SetDoubleValue("Colors", "T Visible Chams.B", GetFloatValue(vars.visuals.CTcham_blue));
+       
+       cfg.SetDoubleValue("Colors", "T Hidden Chams.R", GetFloatValue(vars.visuals.Tchamhid_red));
+       cfg.SetDoubleValue("Colors", "T Hidden Chams.G", GetFloatValue(vars.visuals.Tchamhid_blue));
+       cfg.SetDoubleValue("Colors", "T Hidden Chams.B", GetFloatValue(vars.visuals.Tchamhid_green));
+       
+       cfg.SetDoubleValue("Colors", "Arm.R", GetFloatValue(vars.visuals.arm_red));
+       cfg.SetDoubleValue("Colors", "Arm.G", GetFloatValue(vars.visuals.arm_green));
+       cfg.SetDoubleValue("Colors", "Arm.B", GetFloatValue(vars.visuals.arm_blue));
+       
+       cfg.SetDoubleValue("Colors", "Weapon.R", GetFloatValue(vars.visuals.weapon_red));
+       cfg.SetDoubleValue("Colors", "Weapon.G", GetFloatValue(vars.visuals.weapon_green));
+       cfg.SetDoubleValue("Colors", "Weapon.B", GetFloatValue(vars.visuals.weapon_blue));
     
     // AA
     cfg.SetBoolValue("Aimbot", "Show Real Angles", GetBoolValue(vars.misc.thirdpersonmode));
@@ -597,49 +636,159 @@ void Config::InitSkins() {
     skins_cfg.SetUnicode(true);
     
     skins_cfg.SetDoubleValue("weapon_deagle", "id", GetFloatValue(skin.deagle));
+    skins_cfg.SetDoubleValue("weapon_deagle", "seed", GetFloatValue(skin.deagle_Seed));
+    skins_cfg.SetDoubleValue("weapon_deagle", "itemdef", GetFloatValue(1));
+    
     skins_cfg.SetDoubleValue("weapon_elite", "id", GetFloatValue(skin.dual));
+    skins_cfg.SetDoubleValue("weapon_elite", "seed", GetFloatValue(skin.dual_Seed));
+    skins_cfg.SetDoubleValue("weapon_elite", "itemdef", GetFloatValue(2));
+    
     skins_cfg.SetDoubleValue("weapon_fiveseven", "id", GetFloatValue(skin.five7));
+    skins_cfg.SetDoubleValue("weapon_fiveseven", "seed", GetFloatValue(skin.five7_Seed));
+    skins_cfg.SetDoubleValue("weapon_fiveseven", "itemdef", GetFloatValue(3));
+    
     skins_cfg.SetDoubleValue("weapon_glock", "id", GetFloatValue(skin.glock));
-    skins_cfg.SetDoubleValue("weapon_ak47", "id", GetFloatValue(skin.ak47));
+    skins_cfg.SetDoubleValue("weapon_glock", "seed", GetFloatValue(skin.glock_Seed));
+    skins_cfg.SetDoubleValue("weapon_glock", "itemdef", GetFloatValue(4));
+    
+    skins_cfg.SetDoubleValue("weapon_ak47", "id", GetFloatValue(skin.ak));
+    skins_cfg.SetDoubleValue("weapon_ak47", "seed", GetFloatValue(skin.ak_Seed));
+    skins_cfg.SetDoubleValue("weapon_ak47", "itemdef", GetFloatValue(7));
+    
     skins_cfg.SetDoubleValue("weapon_aug", "id", GetFloatValue(skin.aug));
+    skins_cfg.SetDoubleValue("weapon_aug", "seed", GetFloatValue(skin.aug_Seed));
+    skins_cfg.SetDoubleValue("weapon_aug", "itemdef", GetFloatValue(8));
+    
     skins_cfg.SetDoubleValue("weapon_awp", "id", GetFloatValue(skin.awp));
+    skins_cfg.SetDoubleValue("weapon_awp", "seed", GetFloatValue(skin.awp_Seed));
+    skins_cfg.SetDoubleValue("weapon_awp", "itemdef", GetFloatValue(9));
+    
     skins_cfg.SetDoubleValue("weapon_famas", "id", GetFloatValue(skin.famas));
+    skins_cfg.SetDoubleValue("weapon_famas", "seed", GetFloatValue(skin.famas_Seed));
+    skins_cfg.SetDoubleValue("weapon_famas", "itemdef", GetFloatValue(10));
+    
     skins_cfg.SetDoubleValue("weapon_g3sg1", "id", GetFloatValue(skin.g3));
+    skins_cfg.SetDoubleValue("weapon_g3sg1", "seed", GetFloatValue(skin.g3_Seed));
+    skins_cfg.SetDoubleValue("weapon_g3sg1", "itemdef", GetFloatValue(11));
+    
     skins_cfg.SetDoubleValue("weapon_galilar", "id", GetFloatValue(skin.galil));
+    skins_cfg.SetDoubleValue("weapon_galilar", "seed", GetFloatValue(skin.galil_Seed));
+    skins_cfg.SetDoubleValue("weapon_galilar", "itemdef", GetFloatValue(13));
+    
     skins_cfg.SetDoubleValue("weapon_m249", "id", GetFloatValue(skin.m249));
-    skins_cfg.SetDoubleValue("weapon_m4a1", "id", GetFloatValue(skin.m4a4));
+    skins_cfg.SetDoubleValue("weapon_m249", "seed", GetFloatValue(skin.m249_Seed));
+    skins_cfg.SetDoubleValue("weapon_m249", "itemdef", GetFloatValue(14));
+    
+    skins_cfg.SetDoubleValue("weapon_m4a4", "id", GetFloatValue(skin.a4));
+    skins_cfg.SetDoubleValue("weapon_m4a4", "seed", GetFloatValue(skin.a4_Seed));
+    skins_cfg.SetDoubleValue("weapon_m4a4", "itemdef", GetFloatValue(16));
+    
     skins_cfg.SetDoubleValue("weapon_mac10", "id", GetFloatValue(skin.mac10));
+    skins_cfg.SetDoubleValue("weapon_mac10", "seed", GetFloatValue(skin.mac10_Seed));
+    skins_cfg.SetDoubleValue("weapon_mac10", "itemdef", GetFloatValue(17));
+    
     skins_cfg.SetDoubleValue("weapon_p90", "id", GetFloatValue(skin.p90));
+    skins_cfg.SetDoubleValue("weapon_p90", "seed", GetFloatValue(skin.p90_Seed));
+    skins_cfg.SetDoubleValue("weapon_p90", "itemdef", GetFloatValue(19));
+    
     skins_cfg.SetDoubleValue("weapon_ump45", "id", GetFloatValue(skin.ump));
+    skins_cfg.SetDoubleValue("weapon_ump45", "seed", GetFloatValue(skin.ump_Seed));
+    skins_cfg.SetDoubleValue("weapon_ump45", "itemdef", GetFloatValue(24));
+    
     skins_cfg.SetDoubleValue("weapon_xm1014", "id", GetFloatValue(skin.xm));
+    skins_cfg.SetDoubleValue("weapon_xm1014", "seed", GetFloatValue(skin.xm_Seed));
+    skins_cfg.SetDoubleValue("weapon_xm1014", "itemdef", GetFloatValue(25));
+    
     skins_cfg.SetDoubleValue("weapon_bizon", "id", GetFloatValue(skin.bizon));
+    skins_cfg.SetDoubleValue("weapon_bizon", "seed", GetFloatValue(skin.bizon_Seed));
+    skins_cfg.SetDoubleValue("weapon_bizon", "itemdef", GetFloatValue(26));
+    
     skins_cfg.SetDoubleValue("weapon_mag7", "id", GetFloatValue(skin.mag7));
+    skins_cfg.SetDoubleValue("weapon_mag7", "seed", GetFloatValue(skin.mag7_Seed));
+    skins_cfg.SetDoubleValue("weapon_mag7", "itemdef", GetFloatValue(27));
+    
     skins_cfg.SetDoubleValue("weapon_negev", "id", GetFloatValue(skin.negev));
+    skins_cfg.SetDoubleValue("weapon_negev", "seed", GetFloatValue(skin.negev_Seed));
+    skins_cfg.SetDoubleValue("weapon_negev", "itemdef", GetFloatValue(28));
+    
     skins_cfg.SetDoubleValue("weapon_sawedoff", "id", GetFloatValue(skin.sawed));
+    skins_cfg.SetDoubleValue("weapon_sawedoff", "seed", GetFloatValue(skin.sawed_Seed));
+    skins_cfg.SetDoubleValue("weapon_sawedoff", "itemdef", GetFloatValue(29));
+    
     skins_cfg.SetDoubleValue("weapon_tec9", "id", GetFloatValue(skin.tec9));
+    skins_cfg.SetDoubleValue("weapon_tec9", "seed", GetFloatValue(skin.tec9_Seed));
+    skins_cfg.SetDoubleValue("weapon_tec9", "itemdef", GetFloatValue(30));
+    
     skins_cfg.SetDoubleValue("weapon_hkp2000", "id", GetFloatValue(skin.p2000));
+    skins_cfg.SetDoubleValue("weapon_hkp2000", "seed", GetFloatValue(skin.p2000_Seed));
+    skins_cfg.SetDoubleValue("weapon_hkp2000", "itemdef", GetFloatValue(32));
+    
     skins_cfg.SetDoubleValue("weapon_mp7", "id", GetFloatValue(skin.mp7));
+    skins_cfg.SetDoubleValue("weapon_mp7", "seed", GetFloatValue(skin.mp7_Seed));
+    skins_cfg.SetDoubleValue("weapon_mp7", "itemdef", GetFloatValue(33));
+    
     skins_cfg.SetDoubleValue("weapon_mp9", "id", GetFloatValue(skin.mp9));
+    skins_cfg.SetDoubleValue("weapon_mp9", "seed", GetFloatValue(skin.mp9_Seed));
+    skins_cfg.SetDoubleValue("weapon_mp9", "itemdef", GetFloatValue(34));
+    
     skins_cfg.SetDoubleValue("weapon_nova", "id", GetFloatValue(skin.nova));
+    skins_cfg.SetDoubleValue("weapon_nova", "seed", GetFloatValue(skin.nova_Seed));
+    skins_cfg.SetDoubleValue("weapon_nova", "itemdef", GetFloatValue(35));
+    
     skins_cfg.SetDoubleValue("weapon_p250", "id", GetFloatValue(skin.p250));
+    skins_cfg.SetDoubleValue("weapon_p250", "seed", GetFloatValue(skin.p250_Seed));
+    skins_cfg.SetDoubleValue("weapon_p250", "itemdef", GetFloatValue(36));
+    
     skins_cfg.SetDoubleValue("weapon_scar20", "id", GetFloatValue(skin.scar));
+    skins_cfg.SetDoubleValue("weapon_scar20", "seed", GetFloatValue(skin.scar_Seed));
+    skins_cfg.SetDoubleValue("weapon_scar20", "itemdef", GetFloatValue(38));
+    
     skins_cfg.SetDoubleValue("weapon_sg556", "id", GetFloatValue(skin.sg));
+    skins_cfg.SetDoubleValue("weapon_sg556", "seed", GetFloatValue(skin.sg_Seed));
+    skins_cfg.SetDoubleValue("weapon_sg556", "itemdef", GetFloatValue(39));
+    
     skins_cfg.SetDoubleValue("weapon_ssg08", "id", GetFloatValue(skin.scout));
-    skins_cfg.SetDoubleValue("weapon_m4a1_silencer", "id", GetFloatValue(skin.m4a1));
-    skins_cfg.SetDoubleValue("weapon_usp_silencer", "id", GetFloatValue(skin.usp));
-    skins_cfg.SetDoubleValue("weapon_cz75a", "id", GetFloatValue(skin.cz));
-    skins_cfg.SetDoubleValue("weapon_revolver", "id", GetFloatValue(skin.revolver));
+    skins_cfg.SetDoubleValue("weapon_ssg08", "seed", GetFloatValue(skin.scout_Seed));
+    skins_cfg.SetDoubleValue("weapon_ssg08", "itemdef", GetFloatValue(40));
+    
     skins_cfg.SetDoubleValue("weapon_knife", "id", GetFloatValue(skin.CTknifeID));
+    skins_cfg.SetDoubleValue("weapon_knife", "seed", GetFloatValue(skin.CTknfieSeed));
     skins_cfg.SetDoubleValue("weapon_knife", "itemdef", GetFloatValue(skin.knifeCT));
+    
     skins_cfg.SetDoubleValue("weapon_knife_t", "id", GetFloatValue(skin.TknifeID));
+    skins_cfg.SetDoubleValue("weapon_knife_t", "seed", GetFloatValue(skin.TknifeSeed));
     skins_cfg.SetDoubleValue("weapon_knife_t", "itemdef", GetFloatValue(skin.knifeT));
+    
+    skins_cfg.SetDoubleValue("weapon_m4a1_silencer", "id", GetFloatValue(skin.a1));
+    skins_cfg.SetDoubleValue("weapon_m4a1_silencer", "seed", GetFloatValue(skin.a1_Seed));
+    skins_cfg.SetDoubleValue("weapon_m4a1_silencer", "itemdef", GetFloatValue(60));
+    
+    skins_cfg.SetDoubleValue("weapon_usp_silencer", "id", GetFloatValue(skin.usp));
+    skins_cfg.SetDoubleValue("weapon_usp_silencer", "seed", GetFloatValue(skin.usp_Seed));
+    skins_cfg.SetDoubleValue("weapon_usp_silencer", "itemdef", GetFloatValue(61));
+    
+    skins_cfg.SetDoubleValue("weapon_cz75a", "id", GetFloatValue(skin.cz));
+    skins_cfg.SetDoubleValue("weapon_cz75a", "seed", GetFloatValue(skin.cz_Seed));
+    skins_cfg.SetDoubleValue("weapon_cz75a", "itemdef", GetFloatValue(63));
+    
+    skins_cfg.SetDoubleValue("weapon_revolver", "id", GetFloatValue(skin.r8));
+    skins_cfg.SetDoubleValue("weapon_revolver", "seed", GetFloatValue(skin.r8_Seed));
+    skins_cfg.SetDoubleValue("weapon_revolver", "itemdef", GetFloatValue(64));
+    
     skins_cfg.SetDoubleValue("glove_t", "id", GetFloatValue(skin.TgloveID));
     skins_cfg.SetDoubleValue("glove_t", "itemdef", GetFloatValue(skin.gloveT));
+    
     skins_cfg.SetDoubleValue("glove_ct", "id", GetFloatValue(skin.CTgloveID));
     skins_cfg.SetDoubleValue("glove_ct", "itemdef", GetFloatValue(skin.gloveCT));
-    
-    // Seeds
-    
+    /*
+     skins_cfg.SetDoubleValue("t glove", "id", GetFloatValue(skin.TgloveID));
+     //skins_cfg.SetDoubleValue("t glove", "seed", GetFloatValue(skin.tgloveskin));
+     skins_cfg.SetDoubleValue("t glove", "itemdef", GetFloatValue(skin.gloveT));
+     
+     skins_cfg.SetDoubleValue("ct glove", "id", GetFloatValue(skin.CTgloveID));
+     //skins_cfg.SetDoubleValue("ct glove", "seed", GetFloatValue(skin.ctgloveskin));
+     skins_cfg.SetDoubleValue("ct glove", "itemdef", GetFloatValue(skin.gloveCT));
+     */
     
     
     skins_cfg.SaveFile(skins.c_str());
@@ -651,54 +800,155 @@ void Config::UpdateSkins() {
     skins_cfg.SetUnicode(true);
     
     skins_cfg.SetDoubleValue("weapon_deagle", "id", GetFloatValue(skin.deagle));
+    skins_cfg.SetDoubleValue("weapon_deagle", "seed", GetFloatValue(skin.deagle_Seed));
+    skins_cfg.SetDoubleValue("weapon_deagle", "itemdef", GetFloatValue(1));
+    
     skins_cfg.SetDoubleValue("weapon_elite", "id", GetFloatValue(skin.dual));
+    skins_cfg.SetDoubleValue("weapon_elite", "seed", GetFloatValue(skin.dual_Seed));
+    skins_cfg.SetDoubleValue("weapon_elite", "itemdef", GetFloatValue(2));
+    
     skins_cfg.SetDoubleValue("weapon_fiveseven", "id", GetFloatValue(skin.five7));
+    skins_cfg.SetDoubleValue("weapon_fiveseven", "seed", GetFloatValue(skin.five7_Seed));
+    skins_cfg.SetDoubleValue("weapon_fiveseven", "itemdef", GetFloatValue(3));
+    
     skins_cfg.SetDoubleValue("weapon_glock", "id", GetFloatValue(skin.glock));
-    skins_cfg.SetDoubleValue("weapon_ak47", "id", GetFloatValue(skin.ak47));
+    skins_cfg.SetDoubleValue("weapon_glock", "seed", GetFloatValue(skin.glock_Seed));
+    skins_cfg.SetDoubleValue("weapon_glock", "itemdef", GetFloatValue(4));
+    
+    skins_cfg.SetDoubleValue("weapon_ak47", "id", GetFloatValue(skin.ak));
+    skins_cfg.SetDoubleValue("weapon_ak47", "seed", GetFloatValue(skin.ak_Seed));
+    skins_cfg.SetDoubleValue("weapon_ak47", "itemdef", GetFloatValue(7));
+    
     skins_cfg.SetDoubleValue("weapon_aug", "id", GetFloatValue(skin.aug));
+    skins_cfg.SetDoubleValue("weapon_aug", "seed", GetFloatValue(skin.aug_Seed));
+    skins_cfg.SetDoubleValue("weapon_aug", "itemdef", GetFloatValue(8));
+    
     skins_cfg.SetDoubleValue("weapon_awp", "id", GetFloatValue(skin.awp));
+    skins_cfg.SetDoubleValue("weapon_awp", "seed", GetFloatValue(skin.awp_Seed));
+    skins_cfg.SetDoubleValue("weapon_awp", "itemdef", GetFloatValue(9));
+    
     skins_cfg.SetDoubleValue("weapon_famas", "id", GetFloatValue(skin.famas));
+    skins_cfg.SetDoubleValue("weapon_famas", "seed", GetFloatValue(skin.famas_Seed));
+    skins_cfg.SetDoubleValue("weapon_famas", "itemdef", GetFloatValue(10));
+    
     skins_cfg.SetDoubleValue("weapon_g3sg1", "id", GetFloatValue(skin.g3));
+    skins_cfg.SetDoubleValue("weapon_g3sg1", "seed", GetFloatValue(skin.g3_Seed));
+    skins_cfg.SetDoubleValue("weapon_g3sg1", "itemdef", GetFloatValue(11));
+    
     skins_cfg.SetDoubleValue("weapon_galilar", "id", GetFloatValue(skin.galil));
+    skins_cfg.SetDoubleValue("weapon_galilar", "seed", GetFloatValue(skin.galil_Seed));
+    skins_cfg.SetDoubleValue("weapon_galilar", "itemdef", GetFloatValue(13));
+    
     skins_cfg.SetDoubleValue("weapon_m249", "id", GetFloatValue(skin.m249));
-    skins_cfg.SetDoubleValue("weapon_m4a1", "id", GetFloatValue(skin.m4a4));
+    skins_cfg.SetDoubleValue("weapon_m249", "seed", GetFloatValue(skin.m249_Seed));
+    skins_cfg.SetDoubleValue("weapon_m249", "itemdef", GetFloatValue(14));
+    
+    skins_cfg.SetDoubleValue("weapon_m4a4", "id", GetFloatValue(skin.a4));
+    skins_cfg.SetDoubleValue("weapon_m4a4", "seed", GetFloatValue(skin.a4_Seed));
+    skins_cfg.SetDoubleValue("weapon_m4a4", "itemdef", GetFloatValue(16));
+    
     skins_cfg.SetDoubleValue("weapon_mac10", "id", GetFloatValue(skin.mac10));
+    skins_cfg.SetDoubleValue("weapon_mac10", "seed", GetFloatValue(skin.mac10_Seed));
+    skins_cfg.SetDoubleValue("weapon_mac10", "itemdef", GetFloatValue(17));
+    
     skins_cfg.SetDoubleValue("weapon_p90", "id", GetFloatValue(skin.p90));
+    skins_cfg.SetDoubleValue("weapon_p90", "seed", GetFloatValue(skin.p90_Seed));
+    skins_cfg.SetDoubleValue("weapon_p90", "itemdef", GetFloatValue(19));
+    
     skins_cfg.SetDoubleValue("weapon_ump45", "id", GetFloatValue(skin.ump));
+    skins_cfg.SetDoubleValue("weapon_ump45", "seed", GetFloatValue(skin.ump_Seed));
+    skins_cfg.SetDoubleValue("weapon_ump45", "itemdef", GetFloatValue(24));
+    
     skins_cfg.SetDoubleValue("weapon_xm1014", "id", GetFloatValue(skin.xm));
+    skins_cfg.SetDoubleValue("weapon_xm1014", "seed", GetFloatValue(skin.xm_Seed));
+    skins_cfg.SetDoubleValue("weapon_xm1014", "itemdef", GetFloatValue(25));
+    
     skins_cfg.SetDoubleValue("weapon_bizon", "id", GetFloatValue(skin.bizon));
+    skins_cfg.SetDoubleValue("weapon_bizon", "seed", GetFloatValue(skin.bizon_Seed));
+    skins_cfg.SetDoubleValue("weapon_bizon", "itemdef", GetFloatValue(26));
+    
     skins_cfg.SetDoubleValue("weapon_mag7", "id", GetFloatValue(skin.mag7));
+    skins_cfg.SetDoubleValue("weapon_mag7", "seed", GetFloatValue(skin.mag7_Seed));
+    skins_cfg.SetDoubleValue("weapon_mag7", "itemdef", GetFloatValue(27));
+    
     skins_cfg.SetDoubleValue("weapon_negev", "id", GetFloatValue(skin.negev));
+    skins_cfg.SetDoubleValue("weapon_negev", "seed", GetFloatValue(skin.negev_Seed));
+    skins_cfg.SetDoubleValue("weapon_negev", "itemdef", GetFloatValue(28));
+    
     skins_cfg.SetDoubleValue("weapon_sawedoff", "id", GetFloatValue(skin.sawed));
+    skins_cfg.SetDoubleValue("weapon_sawedoff", "seed", GetFloatValue(skin.sawed_Seed));
+    skins_cfg.SetDoubleValue("weapon_sawedoff", "itemdef", GetFloatValue(29));
+    
     skins_cfg.SetDoubleValue("weapon_tec9", "id", GetFloatValue(skin.tec9));
+    skins_cfg.SetDoubleValue("weapon_tec9", "seed", GetFloatValue(skin.tec9_Seed));
+    skins_cfg.SetDoubleValue("weapon_tec9", "itemdef", GetFloatValue(30));
+    
     skins_cfg.SetDoubleValue("weapon_hkp2000", "id", GetFloatValue(skin.p2000));
+    skins_cfg.SetDoubleValue("weapon_hkp2000", "seed", GetFloatValue(skin.p2000_Seed));
+    skins_cfg.SetDoubleValue("weapon_hkp2000", "itemdef", GetFloatValue(32));
+    
     skins_cfg.SetDoubleValue("weapon_mp7", "id", GetFloatValue(skin.mp7));
+    skins_cfg.SetDoubleValue("weapon_mp7", "seed", GetFloatValue(skin.mp7_Seed));
+    skins_cfg.SetDoubleValue("weapon_mp7", "itemdef", GetFloatValue(33));
+    
     skins_cfg.SetDoubleValue("weapon_mp9", "id", GetFloatValue(skin.mp9));
+    skins_cfg.SetDoubleValue("weapon_mp9", "seed", GetFloatValue(skin.mp9_Seed));
+    skins_cfg.SetDoubleValue("weapon_mp9", "itemdef", GetFloatValue(34));
+    
     skins_cfg.SetDoubleValue("weapon_nova", "id", GetFloatValue(skin.nova));
+    skins_cfg.SetDoubleValue("weapon_nova", "seed", GetFloatValue(skin.nova_Seed));
+    skins_cfg.SetDoubleValue("weapon_nova", "itemdef", GetFloatValue(35));
+    
     skins_cfg.SetDoubleValue("weapon_p250", "id", GetFloatValue(skin.p250));
+    skins_cfg.SetDoubleValue("weapon_p250", "seed", GetFloatValue(skin.p250_Seed));
+    skins_cfg.SetDoubleValue("weapon_p250", "itemdef", GetFloatValue(36));
+    
     skins_cfg.SetDoubleValue("weapon_scar20", "id", GetFloatValue(skin.scar));
+    skins_cfg.SetDoubleValue("weapon_scar20", "seed", GetFloatValue(skin.scar_Seed));
+    skins_cfg.SetDoubleValue("weapon_scar20", "itemdef", GetFloatValue(38));
+    
     skins_cfg.SetDoubleValue("weapon_sg556", "id", GetFloatValue(skin.sg));
+    skins_cfg.SetDoubleValue("weapon_sg556", "seed", GetFloatValue(skin.sg_Seed));
+    skins_cfg.SetDoubleValue("weapon_sg556", "itemdef", GetFloatValue(39));
+    
     skins_cfg.SetDoubleValue("weapon_ssg08", "id", GetFloatValue(skin.scout));
-    skins_cfg.SetDoubleValue("weapon_m4a1_silencer", "id", GetFloatValue(skin.m4a1));
-    skins_cfg.SetDoubleValue("weapon_usp_silencer", "id", GetFloatValue(skin.usp));
-    skins_cfg.SetDoubleValue("weapon_cz75a", "id", GetFloatValue(skin.cz));
-    skins_cfg.SetDoubleValue("weapon_revolver", "id", GetFloatValue(skin.revolver));
+    skins_cfg.SetDoubleValue("weapon_ssg08", "seed", GetFloatValue(skin.scout_Seed));
+    skins_cfg.SetDoubleValue("weapon_ssg08", "itemdef", GetFloatValue(40));
+    
     skins_cfg.SetDoubleValue("weapon_knife", "id", GetFloatValue(skin.CTknifeID));
+    skins_cfg.SetDoubleValue("weapon_knife", "seed", GetFloatValue(skin.CTknfieSeed));
     skins_cfg.SetDoubleValue("weapon_knife", "itemdef", GetFloatValue(skin.knifeCT));
+    
     skins_cfg.SetDoubleValue("weapon_knife_t", "id", GetFloatValue(skin.TknifeID));
+    skins_cfg.SetDoubleValue("weapon_knife_t", "seed", GetFloatValue(skin.TknifeSeed));
     skins_cfg.SetDoubleValue("weapon_knife_t", "itemdef", GetFloatValue(skin.knifeT));
+    
+    skins_cfg.SetDoubleValue("weapon_m4a1_silencer", "id", GetFloatValue(skin.a1));
+    skins_cfg.SetDoubleValue("weapon_m4a1_silencer", "seed", GetFloatValue(skin.a1_Seed));
+    skins_cfg.SetDoubleValue("weapon_m4a1_silencer", "itemdef", GetFloatValue(60));
+    
+    skins_cfg.SetDoubleValue("weapon_usp_silencer", "id", GetFloatValue(skin.usp));
+    skins_cfg.SetDoubleValue("weapon_usp_silencer", "seed", GetFloatValue(skin.usp_Seed));
+    skins_cfg.SetDoubleValue("weapon_usp_silencer", "itemdef", GetFloatValue(61));
+    
+    skins_cfg.SetDoubleValue("weapon_cz75a", "id", GetFloatValue(skin.cz));
+    skins_cfg.SetDoubleValue("weapon_cz75a", "seed", GetFloatValue(skin.cz_Seed));
+    skins_cfg.SetDoubleValue("weapon_cz75a", "itemdef", GetFloatValue(63));
+    
+    skins_cfg.SetDoubleValue("weapon_revolver", "id", GetFloatValue(skin.r8));
+    skins_cfg.SetDoubleValue("weapon_revolver", "seed", GetFloatValue(skin.r8_Seed));
+    skins_cfg.SetDoubleValue("weapon_revolver", "itemdef", GetFloatValue(64));
+    
     skins_cfg.SetDoubleValue("glove_t", "id", GetFloatValue(skin.TgloveID));
-    skins_cfg.SetDoubleValue("glove_t", "itemdef", GetFloatValue(skin.gloveT));
-    skins_cfg.SetDoubleValue("glove_ct", "id", GetFloatValue(skin.CTgloveID));
-    skins_cfg.SetDoubleValue("glove_ct", "itemdef", GetFloatValue(skin.gloveCT));
-    
-    // Seeds
-    
-    
+       skins_cfg.SetDoubleValue("glove_t", "itemdef", GetFloatValue(skin.gloveT));
+       
+       skins_cfg.SetDoubleValue("glove_ct", "id", GetFloatValue(skin.CTgloveID));
+       skins_cfg.SetDoubleValue("glove_ct", "itemdef", GetFloatValue(skin.gloveCT));
     
     skins_cfg.SaveFile(skins.c_str());
     
 }
+
 
 void Config::LoadSkins() {
     
@@ -711,14 +961,11 @@ void Config::LoadSkins() {
     skin.TknifeID   = skin_cfgget_f("weapon_knife_t", "id");
     skin.CTknifeID  = skin_cfgget_f("weapon_knife", "id");
     
-    skin.TgloveID = skin_cfgget_f("glove_t", "id");
-    skin.CTgloveID = skin_cfgget_f("glove_ct", "id");
-    
     skin.galil   = skin_cfgget_f("weapon_galilar", "id");
     skin.famas   = skin_cfgget_f("weapon_famas", "id");
-    skin.ak47      = skin_cfgget_f("weapon_ak47", "id");
-    skin.m4a4      = skin_cfgget_f("weapon_m4a1", "id");
-    skin.m4a1      = skin_cfgget_f("weapon_m4a1_silencer", "id");
+    skin.ak      = skin_cfgget_f("weapon_ak47", "id");
+    skin.a4      = skin_cfgget_f("weapon_m4a4", "id");
+    skin.a1      = skin_cfgget_f("weapon_m4a1_silencer", "id");
     skin.scout   = skin_cfgget_f("weapon_ssg08", "id");
     skin.sg      = skin_cfgget_f("weapon_sg556", "id");
     skin.aug     = skin_cfgget_f("weapon_aug", "id");
@@ -735,7 +982,7 @@ void Config::LoadSkins() {
     skin.five7   = skin_cfgget_f("weapon_fiveseven", "id");
     skin.cz      = skin_cfgget_f("weapon_cz75a", "id");
     skin.deagle  = skin_cfgget_f("weapon_deagle", "id");
-    skin.revolver      = skin_cfgget_f("weapon_revolver", "id");
+    skin.r8      = skin_cfgget_f("weapon_revolver", "id");
     
     skin.mac10   = skin_cfgget_f("weapon_mac10", "id");
     skin.mp9     = skin_cfgget_f("weapon_mp9", "id");
@@ -771,13 +1018,14 @@ bool Config::HasWeaponConfiguration(const char* section) {
 }
 
 
-cSkin Config::GetWeaponConfiguration(const char *section) {
+SkinClass Config::GetWeaponConfiguration(const char *section) {
     
     skins_cfg.LoadFile(skins.c_str());
     
-    cSkin weapon_config;
+    SkinClass weapon_config;
     
     weapon_config.Paintkit      = (int)skin_cfgget_f(section, "id");
+    weapon_config.Seed          = (int)skin_cfgget_f(section, "seed");
     weapon_config.ItemDefinition= (int)skin_cfgget_f(section, "itemdef");
     
     return weapon_config;

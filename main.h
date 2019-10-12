@@ -37,8 +37,7 @@ using namespace std;
 #include "SDK/AnimLayer.h"
 #include "SDK/CBaseAnimating.h"
 #include "SDK/Vector.h"
-#include "Cutlvector.h"
-#include "CutlMemory.h"
+
 
 #include "SDK/Others.h"
 #include "SDK/CPlayerResource.h"
@@ -46,7 +45,6 @@ using namespace std;
 #include "SDK/Color.h"
 #include "SDK/IBaseClientDLL.h"
 #include "SDK/ISurface.h"
-#include "IFileSystem.h"
 #include "SDK/IPanel.h"
 #include "SDK/ICvar.h"
 #include "SDK/C_BaseEntity.h"
@@ -54,7 +52,6 @@ using namespace std;
 #include "SDK/IVDebugOverlay.h"
 #include "SDK/IEngineClient.h"
 #include "SDK/IEngineTrace.h"
-#include "IEngineSound.h"
 #include "SDK/IMaterial.h"
 #include "SDK/IVModelRender.h"
 #include "SDK/IGameMovement.h"

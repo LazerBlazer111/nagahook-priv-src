@@ -10,15 +10,15 @@ typedef float vec_t;
 #define CHECK_VALID( _v ) 0
 #define Assert( _exp ) ((void)0)
 
-#define FastSqrt(x)			(sqrt)(x)
+#define FastSqrt(x)            (sqrt)(x)
 
-//#define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
+//#define M_PI        3.14159265358979323846    // matches value in gcc v2 math.h
 
 #define M_RADPI 57.295779513082
 
-#define M_PI_F		((float)(M_PI))	// Shouldn't collide with anything.
+#define M_PI_F        ((float)(M_PI))    // Shouldn't collide with anything.
 
-#define M_PHI		1.61803398874989484820 // golden ratio
+#define M_PHI        1.61803398874989484820 // golden ratio
 
 // NJS: Inlined to prevent floats from being autopromoted to doubles, as with the old system.
 #ifndef RAD2DEG
@@ -32,9 +32,9 @@ typedef float vec_t;
 // MOVEMENT INFO
 enum
 {
-    PITCH = 0,	// up / down
-    YAW,		// left / right
-    ROLL		// fall over
+    PITCH = 0,    // up / down
+    YAW,        // left / right
+    ROLL        // fall over
 };
 
 // decls for aligning data
@@ -54,19 +54,80 @@ struct matrix3x4_t
                 float m10, float m11, float m12, float m13,
                 float m20, float m21, float m22, float m23)
     {
-        m_flMatVal[0][0] = m00;	m_flMatVal[0][1] = m01; m_flMatVal[0][2] = m02; m_flMatVal[0][3] = m03;
-        m_flMatVal[1][0] = m10;	m_flMatVal[1][1] = m11; m_flMatVal[1][2] = m12; m_flMatVal[1][3] = m13;
-        m_flMatVal[2][0] = m20;	m_flMatVal[2][1] = m21; m_flMatVal[2][2] = m22; m_flMatVal[2][3] = m23;
+        m_flMatVal[0][0] = m00;    m_flMatVal[0][1] = m01; m_flMatVal[0][2] = m02; m_flMatVal[0][3] = m03;
+        m_flMatVal[1][0] = m10;    m_flMatVal[1][1] = m11; m_flMatVal[1][2] = m12; m_flMatVal[1][3] = m13;
+        m_flMatVal[2][0] = m20;    m_flMatVal[2][1] = m21; m_flMatVal[2][2] = m22; m_flMatVal[2][3] = m23;
     }
     
-    float *operator[](int i)				{ Assert((i >= 0) && (i < 3)); return m_flMatVal[i]; }
-    const float *operator[](int i) const	{ Assert((i >= 0) && (i < 3)); return m_flMatVal[i]; }
-    float *Base()							{ return &m_flMatVal[0][0]; }
-    const float *Base() const				{ return &m_flMatVal[0][0]; }
+    float *operator[](int i)                { Assert((i >= 0) && (i < 3)); return m_flMatVal[i]; }
+    const float *operator[](int i) const    { Assert((i >= 0) && (i < 3)); return m_flMatVal[i]; }
+    float *Base()                            { return &m_flMatVal[0][0]; }
+    const float *Base() const                { return &m_flMatVal[0][0]; }
     
     float m_flMatVal[3][4];
 };
 
+class VMatrix
+{
+public:
+    
+    VMatrix() {}
+    VMatrix(
+            float m00, float m01, float m02, float m03,
+            float m10, float m11, float m12, float m13,
+            float m20, float m21, float m22, float m23,
+            float m30, float m31, float m32, float m33
+            ){
+        m[0][0] = m00;
+        m[0][1] = m01;
+        m[0][2] = m02;
+        m[0][3] = m03;
+        
+        m[1][0] = m10;
+        m[1][1] = m11;
+        m[1][2] = m12;
+        m[1][3] = m13;
+        
+        m[2][0] = m20;
+        m[2][1] = m21;
+        m[2][2] = m22;
+        m[2][3] = m23;
+        
+        m[3][0] = m30;
+        m[3][1] = m31;
+        m[3][2] = m32;
+        m[3][3] = m33;
+    }
+    
+    
+    
+    // array access
+    inline float* operator[](int i)
+    {
+        return m[i];
+    }
+    
+    inline const float* operator[](int i) const
+    {
+        return m[i];
+    }
+    
+    // Get a pointer to m[0][0]
+    inline float *Base()
+    {
+        return &m[0][0];
+    }
+    
+    inline const float *Base() const
+    {
+        return &m[0][0];
+    }
+    
+    
+public:
+    // The matrix.
+    float        m[4][4];
+};
 
 class Vector
 {
@@ -104,17 +165,17 @@ public:
     bool operator!=(const Vector& v) const;
     
     // arithmetic operations
-    inline Vector&	operator+=(const Vector &v);
-    inline Vector&	operator-=(const Vector &v);
-    inline Vector&	operator*=(const Vector &v);
-    inline Vector&	operator*=(float s);
-    inline Vector&	operator/=(const Vector &v);
-    inline Vector&	operator/=(float s);
-    inline Vector&	operator+=(float fl); ///< broadcast add
-    inline Vector&	operator-=(float fl); ///< broadcast sub
+    inline Vector&    operator+=(const Vector &v);
+    inline Vector&    operator-=(const Vector &v);
+    inline Vector&    operator*=(const Vector &v);
+    inline Vector&    operator*=(float s);
+    inline Vector&    operator/=(const Vector &v);
+    inline Vector&    operator/=(float s);
+    inline Vector&    operator+=(float fl); ///< broadcast add
+    inline Vector&    operator-=(float fl); ///< broadcast sub
     
     // negate the vector components
-    void	Negate();
+    void    Negate();
     
     // Get the vector's magnitude.
     
@@ -133,64 +194,65 @@ public:
     }
     inline Vector GetNormalized(void);
     inline Vector Normalize(void);
-    vec_t	NormalizeInPlace();
-    Vector	Normalized();
-    bool	IsLengthGreaterThan(float val) const;
-    bool	IsLengthLessThan(float val) const;
+    vec_t    NormalizeInPlace();
+    Vector    Normalized();
+    void    normalize_aimbot();
+    bool    IsLengthGreaterThan(float val) const;
+    bool    IsLengthLessThan(float val) const;
     
     // check if a vector is within the box defined by two other vectors
     inline bool WithinAABox(Vector const &boxmin, Vector const &boxmax);
     
     // Get the distance from this vector to the other one.
-    vec_t	DistTo(const Vector &vOther) const;
+    vec_t    DistTo(const Vector &vOther) const;
     
     // Get the distance from this vector to the other one squared.
     // NJS: note, VC wasn't inlining it correctly in several deeply nested inlines due to being an 'out of line' inline.
     // may be able to tidy this up after switching to VC7
     
     // Copy
-    void	CopyToArray(float* rgfl) const;
+    void    CopyToArray(float* rgfl) const;
     
     // Multiply, add, and assign to this (ie: *this = a + b * scalar). This
     // is about 12% faster than the actual vector equation (because it's done per-component
     // rather than per-vector).
-    void	MulAdd(const Vector& a, const Vector& b, float scalar);
+    void    MulAdd(const Vector& a, const Vector& b, float scalar);
     
     // Dot product.
-    vec_t	Dot(const Vector& vOther) const;
+    vec_t    Dot(const Vector& vOther) const;
     
     // assignment
     Vector& operator=(const Vector &vOther);
     
     // 2d
-    vec_t	Length2D(void) const;
-    vec_t	Length(void) const;
-    vec_t	Length2DSqr(void) const;
+    vec_t    Length2D(void) const;
+    vec_t    Length(void) const;
+    vec_t    Length2DSqr(void) const;
     
     
 #ifndef VECTOR_NO_SLOW_OPERATIONS
     // copy constructors
-    //	Vector(const Vector &vOther);
+    //    Vector(const Vector &vOther);
     
     // arithmetic operations
-    Vector	operator-(void) const;
+    Vector    operator-(void) const;
     
-    Vector	operator+(const Vector& v) const;
-    Vector	operator-(const Vector& v) const;
-    Vector	operator*(const Vector& v) const;
-    Vector	operator/(const Vector& v) const;
-    Vector	operator*(float fl) const;
-    Vector	operator/(float fl) const;
+    Vector    operator+(const Vector& v) const;
+    Vector    operator-(const Vector& v) const;
+    Vector    operator*(const Vector& v) const;
+    Vector    operator/(const Vector& v) const;
+    Vector    operator*(float fl) const;
+    Vector    operator/(float fl) const;
     
     // Cross product between two vectors.
-    Vector	Cross(const Vector &vOther) const;
+    Vector    Cross(const Vector &vOther) const;
     
     // Returns a vector with the min or max in X, Y, and Z.
-    Vector	Min(const Vector &vOther) const;
-    Vector	Max(const Vector &vOther) const;
+    Vector    Min(const Vector &vOther) const;
+    Vector    Max(const Vector &vOther) const;
     
     void ClampAngles();
-    
+    Vector&  Clamp();
 #else
     
 private:
@@ -223,9 +285,9 @@ inline Vector::Vector(vec_t XYZ)
 
 //inline Vector::Vector(const float *pFloat)
 //{
-//	Assert( pFloat );
-//	x = pFloat[0]; y = pFloat[1]; z = pFloat[2];
-//	CHECK_VALID(*this);
+//    Assert( pFloat );
+//    x = pFloat[0]; y = pFloat[1]; z = pFloat[2];
+//    CHECK_VALID(*this);
 //}
 
 #if 0
@@ -281,7 +343,6 @@ inline Vector Vector::GetNormalized(void)
     
     return Vector(0, 0, 1);
 }
-
 
 //-----------------------------------------------------------------------------
 // Array access
@@ -355,11 +416,13 @@ inline void VectorCopy(const Vector& src, Vector& dst)
     dst.z = src.z;
 }
 
-inline void	Vector::CopyToArray(float* rgfl) const
+inline void    Vector::CopyToArray(float* rgfl) const
 {
     Assert(rgfl);
     CHECK_VALID(*this);
-    rgfl[0] = x, rgfl[1] = y, rgfl[2] = z;
+    rgfl[0] = x;
+    rgfl[1] = y;
+    rgfl[2] = z;
 }
 
 //-----------------------------------------------------------------------------
@@ -409,7 +472,7 @@ inline  Vector& Vector::operator*=(const Vector& v)
 }
 
 // this ought to be an opcode.
-inline Vector&	Vector::operator+=(float fl)
+inline Vector&    Vector::operator+=(float fl)
 {
     x += fl;
     y += fl;
@@ -418,13 +481,33 @@ inline Vector&	Vector::operator+=(float fl)
     return *this;
 }
 
-inline Vector&	Vector::operator-=(float fl)
+inline Vector&    Vector::operator-=(float fl)
 {
     x -= fl;
     y -= fl;
     z -= fl;
     CHECK_VALID(*this);
     return *this;
+}
+
+inline void CrossProduct(const Vector& a, const Vector& b, Vector& result)
+{
+    result.x = a.y * b.z - a.z * b.y;
+    result.y = a.z * b.x - a.x * b.z;
+    result.z = a.x * b.y - a.y * b.x;
+}
+
+inline Vector Vector::Normalize(void)
+{
+    *this = GetNormalized();
+    return *this;
+}
+
+inline Vector Vector::Cross(const Vector& vOther) const
+{
+    Vector res;
+    CrossProduct(*this, vOther, res);
+    return res;
 }
 
 inline void Vector::ClampAngles() {
@@ -442,6 +525,27 @@ inline void Vector::ClampAngles() {
     }
     
     this->z = 0;
+}
+
+inline Vector& Vector::Clamp()
+{
+    CHECK_VALID(*this);
+    
+    if (this->x < -89.0f)
+        this->x = -89.0f;
+    
+    if (this->x > 89.0f)
+        this->x = 89.0f;
+    
+    while (this->y < -180.0f)
+        this->y += 360.0f;
+    
+    while (this->y > 180.0f)
+        this->y -= 360.0f;
+    
+    this->z = 0.0f;
+    
+    return *this;
 }
 
 inline  Vector& Vector::operator/=(float fl)
@@ -606,6 +710,11 @@ inline vec_t Vector::Length(void) const {
     return root;
 }
 
+inline float Vector::Length2DSqr( void ) const
+{
+    return ( x * x + y * y );
+}
+
 inline vec_t DotProduct(const Vector& a, const Vector& b)
 {
     return (a.x * b.x + a.y * b.y + a.z * b.z);
@@ -616,17 +725,10 @@ inline vec_t Vector::Dot(const Vector& vOther) const
     return DotProduct(*this, vOther);
 }
 
-inline void CrossProduct(const Vector& a, const Vector& b, Vector& result)
-{
-    result.x = a.y * b.z - a.z * b.y;
-    result.y = a.z * b.x - a.x * b.z;
-    result.z = a.x * b.y - a.y * b.x;
-}
-
-inline Vector Vector::Normalize(void)
-{
-    *this = GetNormalized();
-    return *this;
+inline void Vector::normalize_aimbot() {
+    x = std::isfinite(x) ? std::remainderf(x, 360.0f) : 0.0f;
+    y = std::isfinite(y) ? std::remainderf(y, 360.0f) : 0.0f;
+    z = 0.0f;
 }
 
 inline Vector Vector::Normalized() {
@@ -742,7 +844,7 @@ public:
     }
     
 #endif
-    float w;	// this space is used anyway
+    float w;    // this space is used anyway
 };
 
 inline bool IsFinite(float f)
@@ -788,21 +890,21 @@ public:
     bool operator!=(const Vector2D& v) const;
     
     // arithmetic operations
-    Vector2D&	operator+=(const Vector2D &v);
-    Vector2D&	operator-=(const Vector2D &v);
-    Vector2D&	operator*=(const Vector2D &v);
-    Vector2D&	operator*=(float s);
-    Vector2D&	operator/=(const Vector2D &v);
-    Vector2D&	operator/=(float s);
+    Vector2D&    operator+=(const Vector2D &v);
+    Vector2D&    operator-=(const Vector2D &v);
+    Vector2D&    operator*=(const Vector2D &v);
+    Vector2D&    operator*=(float s);
+    Vector2D&    operator/=(const Vector2D &v);
+    Vector2D&    operator/=(float s);
     
     // negate the Vector2D components
-    void	Negate();
+    void    Negate();
     
     // Get the Vector2D's magnitude.
-    float	Length() const;
+    float    Length() const;
     
     // Get the Vector2D's magnitude squared.
-    float	LengthSqr(void) const;
+    float    LengthSqr(void) const;
     
     // return true if this vector is (0,0) within tolerance
     bool IsZero(float tolerance = 0.01f) const
@@ -811,31 +913,31 @@ public:
                 y > -tolerance && y < tolerance);
     }
     
-    float	Normalize();
+    float    Normalize();
     
     // Normalize in place and return the old length.
-    float	NormalizeInPlace();
+    float    NormalizeInPlace();
     
     // Compare length.
-    bool	IsLengthGreaterThan(float val) const;
-    bool	IsLengthLessThan(float val) const;
+    bool    IsLengthGreaterThan(float val) const;
+    bool    IsLengthLessThan(float val) const;
     
     // Get the distance from this Vector2D to the other one.
-    float	DistTo(const Vector2D &vOther) const;
+    float    DistTo(const Vector2D &vOther) const;
     
     // Get the distance from this Vector2D to the other one squared.
-    float	DistToSqr(const Vector2D &vOther) const;
+    float    DistToSqr(const Vector2D &vOther) const;
     
     // Copy
-    void	CopyToArray(float* rgfl) const;
+    void    CopyToArray(float* rgfl) const;
     
     // Multiply, add, and assign to this (ie: *this = a + b * scalar). This
     // is about 12% faster than the actual Vector2D equation (because it's done per-component
     // rather than per-Vector2D).
-    void	MulAdd(const Vector2D& a, const Vector2D& b, float scalar);
+    void    MulAdd(const Vector2D& a, const Vector2D& b, float scalar);
     
     // Dot product.
-    float	Dot(const Vector2D& vOther) const;
+    float    Dot(const Vector2D& vOther) const;
     
     // assignment
     Vector2D& operator=(const Vector2D &vOther);
@@ -845,21 +947,21 @@ public:
     Vector2D(const Vector2D &vOther);
     
     // arithmetic operations
-    Vector2D	operator-(void) const;
+    Vector2D    operator-(void) const;
     
-    Vector2D	operator+(const Vector2D& v) const;
-    Vector2D	operator-(const Vector2D& v) const;
-    Vector2D	operator*(const Vector2D& v) const;
-    Vector2D	operator/(const Vector2D& v) const;
-    Vector2D	operator*(float fl) const;
-    Vector2D	operator/(float fl) const;
+    Vector2D    operator+(const Vector2D& v) const;
+    Vector2D    operator-(const Vector2D& v) const;
+    Vector2D    operator*(const Vector2D& v) const;
+    Vector2D    operator/(const Vector2D& v) const;
+    Vector2D    operator*(float fl) const;
+    Vector2D    operator/(float fl) const;
     
     // Cross product between two vectors.
-    Vector2D	Cross(const Vector2D &vOther) const;
+    Vector2D    Cross(const Vector2D &vOther) const;
     
     // Returns a Vector2D with the min or max in X, Y, and Z.
-    Vector2D	Min(const Vector2D &vOther) const;
-    Vector2D	Max(const Vector2D &vOther) const;
+    Vector2D    Min(const Vector2D &vOther) const;
+    Vector2D    Max(const Vector2D &vOther) const;
     
 #else
     
@@ -1055,7 +1157,7 @@ inline void Vector2DCopy(const Vector2D& src, Vector2D& dst)
     dst.y = src.y;
 }
 
-inline void	Vector2D::CopyToArray(float* rgfl) const
+inline void    Vector2D::CopyToArray(float* rgfl) const
 {
     Assert(IsValid());
     Assert(rgfl);
@@ -1176,7 +1278,7 @@ inline void Vector2DMA(const Vector2D& start, float s, const Vector2D& dir, Vect
 
 // FIXME: Remove
 // For backwards compatability
-inline void	Vector2D::MulAdd(const Vector2D& a, const Vector2D& b, float scalar)
+inline void    Vector2D::MulAdd(const Vector2D& a, const Vector2D& b, float scalar)
 {
     x = a.x + b.x * scalar;
     y = a.y + b.y * scalar;

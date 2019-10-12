@@ -3,16 +3,6 @@
 #include "esp.h"
 #include "../Hacks/autowall.h"
 #include "../Backtrack.hpp"
-#include "../Hacks/glowing.hpp"
-struct Footstep
-{
-    long expiration;
-    int entityId;
-    Vector position;
-};
-Vector viewanglesBackup;
-
-std::vector<Footstep> footsteps;
 
 void DrawSkeleton(C_BaseEntity* pEntity, Color color){
     

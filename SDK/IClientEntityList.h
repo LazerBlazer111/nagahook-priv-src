@@ -204,7 +204,7 @@ inline int CBaseHandle::GetEntryIndex() const
 
 inline int CBaseHandle::GetSerialNumber() const
 {
-    return m_Index >> NUM_SERIAL_NUM_SHIFT_BITS;
+    return (int)m_Index >> NUM_SERIAL_NUM_SHIFT_BITS;
 }
 
 inline int CBaseHandle::ToInt() const

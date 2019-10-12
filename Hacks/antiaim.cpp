@@ -7,7 +7,6 @@
 #include "INetChannelInfo.h"
 #define RandomFloat(min, max) (rand() % (max - min + 1) + min)
 
-static bool manualswitch = true;
 
 
 Vector atTargets;
@@ -275,15 +274,26 @@ void doManual(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon){
     if (cmd->buttons & IN_ATTACK || cmd->buttons & IN_USE || cmd->buttons & IN_ATTACK2)
         return;
     
-    static bool switchside = false;
+    static bool switchsideleft = false;
+    static bool switchsideright = false;
     static float resttime;
+    static float resttime1;
     //int SwitchSideKey = KEY_SLASH;
-    if (pInputSystem->IsButtonDown(KEY_SLASH) && abs(resttime - pGlobals->curtime) > 0.5)
+    if (pInputSystem->IsButtonDown(KEY_LEFT) && abs(resttime - pGlobals->curtime) > 0.5)
     {
-        switchside = !switchside;
+        switchsideleft = !switchsideleft;
         resttime = pGlobals->curtime;
     }
-    cmd->viewangles.y += (switchside) ? -90 : 90;
+    if (pInputSystem->IsButtonDown(KEY_RIGHT) && abs(resttime1 - pGlobals->curtime) > 0.5)
+    {
+        switchsideright = !switchsideright;
+        resttime1 = pGlobals->curtime;
+    }
+    if(switchsideleft){
+        cmd->viewangles.y += -90;
+    }else if(switchsideright){
+        cmd->viewangles.y += 90;
+    }
 }
 
 
@@ -558,16 +568,13 @@ float GetMaxDelta(CCSGOAnimState *animState ) {
     
     float unk1 = ((animState->runningAccelProgress * -0.30000001) - 0.19999999) * speedFraction;
     float unk2 = unk1 + 1.0f;
-    float delta;
     
     if (animState->duckProgress > 0)
     {
         unk2 += ((animState->duckProgress * speedFactor) * (0.5f - unk2));// - 1.f
     }
     
-    delta = *(float*)((uintptr_t)animState + 0x3A4) * unk2;
-    
-    return abs(delta);
+    return *(float*)((uintptr_t)animState + 0x3A4) * unk2;
 }
 
 
@@ -579,131 +586,54 @@ float AntiAim::GetMaxxDelta(CCSGOAnimState *animState ) {
     
     float unk1 = ((animState->runningAccelProgress * -0.30000001) - 0.19999999) * speedFraction;
     float unk2 = unk1 + 1.0f;
-    float delta;
     
     if (animState->duckProgress > 0)
     {
         unk2 += ((animState->duckProgress * speedFactor) * (0.5f - unk2));// - 1.f
     }
     
-    delta = *(float*)((uintptr_t)animState + 0x3A4) * unk2;
-    
-    return abs(delta);
+    return *(float*)((uintptr_t)animState + 0x3A4) * unk2;
 }
 
 float GetMaxDelta12(CCSGOAnimState *animState) {
     
-    float speedFraction = std::max(0.0f, std::min(animState->feetShuffleSpeed, 1.0f));
+   float speedFraction = std::max(0.0f, std::min(animState->feetShuffleSpeed, 1.0f));
     
     float speedFactor = std::max(0.0f, std::min(1.0f, animState->feetShuffleSpeed2));
     
     float unk1 = ((animState->runningAccelProgress * -0.30000001) - 0.19999999) * speedFraction;
     float unk2 = unk1 + 1.0f;
-    float delta;
     
     if (animState->duckProgress > 0)
     {
         unk2 += ((animState->duckProgress * speedFactor) * (0.5f - unk2));// - 1.f
     }
     
-    delta = *(float*)((uintptr_t)animState + 0x3A4) * unk2;
-    
-    return delta - 0.5f;
+    return *(float*)((uintptr_t)animState + 0x3A4) * unk2;
 }
 
-float GetMaxDesyncDelta(CCSGOAnimState *animState)
-{
-    float speedfactor = animState->feetShuffleSpeed;
-    
-    if (animState->feetShuffleSpeed > 1.f)
-        speedfactor = 1.f;
-    else if (animState->feetShuffleSpeed < 0.f)
-        speedfactor = 0.f;
-    
-    float unk1 = ((animState->runningAccelProgress * -.3f) - .2f) * speedfactor;
-    float unk2 = unk1 + 1.f;
-    float delta;
-    
-    if (animState->duckProgress > 0.0f)
-    {
-        float max_velocity = animState->feetShuffleSpeed2;
-        
-        if (animState->feetShuffleSpeed2 > 1.f)
-            max_velocity = 1.f;
-        else if (animState->feetShuffleSpeed2 < 0.f)
-            max_velocity = 0.f;
-        
-        float duck_speed = animState->duckProgress * max_velocity;
-        unk2 += (duck_speed * (0.5f - unk2));
-    }
-    
-    delta = *(float*)((uintptr_t)animState + 0x3A4) * unk2;
-    
-    return abs(delta);
-}
 
-float getMaxDesyncAngle(C_BaseEntity* local)
-{
-    if (auto animState = local->GetAnimState()) {
-        float yawModifier = (animState->runningAccelProgress * -0.3f - 0.2f) * std::clamp(animState->feetShuffleSpeed, 0.0f, 1.0f) + 1.0f;
-        
-        if (animState->duckProgress > 0.0f)
-            yawModifier += (animState->duckProgress * std::clamp(animState->feetShuffleSpeed2, 0.0f, 1.0f) * (0.5f - yawModifier));
-        
-        return animState->velocityY * yawModifier;
-    }
-    return 0.0f;
-}
 
-void LegitAA(CUserCmd* cmd, C_BaseEntity* local){
-    if(!pEngine->IsInGame())
-        return;
-    if (!local || !local->GetAlive())
-        return;
+bool break_lby = false;
+float next_update = 0;
+void update_lowerbody_breaker(C_BaseEntity* local) { // from HappyHack by "Incriminating" (unknowncheats)
+    float server_time = local->GetTickBase() * pGlobals->interval_per_tick, speed = local->GetVelocity().Length2DSqr();
     
-    if (local->GetMoveType() == MOVETYPE_LADDER || local->GetMoveType() == MOVETYPE_NOCLIP)
-        return;
-    
-    if ((cmd->buttons & IN_ATTACK) || (cmd->buttons & IN_USE))
-    {
-        AntiAem::GRealAngle = AntiAem::GFakeAngle = cmd->viewangles;
-        return;
+    if (speed > 0.1) {
+        next_update = server_time + 0.22;
     }
     
-    float desync = GetMaxDelta(local->GetAnimState());
-    if (vars.misc.legitaa) {
-        if (!bSendPacket)
-        {
-            cmd->viewangles.y -= ( vars.misc.legitaadditive + desync );
-        }
-        if (vars.misc.legitaastatic) {
-            if (!(cmd->buttons & IN_FORWARD) && !(cmd->buttons & IN_BACK) && !(pInputSystem->IsButtonDown(KEY_SPACE))) {
-                cmd->forwardmove = cmd->tick_count % 2 ? 1.01 : -1.01;
-            }
-        }
-    }
-}
-
-bool LBYUpdate()
-{
-    C_BaseEntity* local = (C_BaseEntity*)pEntList->GetClientEntity(pEngine->GetLocalPlayer());
-    static float NextUpdate = 0;
-    float Curtime = pGlobals->curtime;
-    auto* AnimState = local->GetAnimState();
+    break_lby = false;
     
-    if (!AnimState || !(local->GetFlags() & FL_ONGROUND))
-        return false;
-    
-    if (AnimState->speed > 0.1f)
-        NextUpdate = Curtime + 0.22f;
-    
-    if (NextUpdate < Curtime)
-    {
-        NextUpdate = Curtime + 1.1f;
-        return true;
+    if (next_update <= server_time) {
+        next_update = server_time + 1.1;
+        break_lby = true;
     }
     
-    return false;
+    
+    if (!(local->GetFlags() & FL_ONGROUND)) {
+        break_lby = false;
+    }
 }
 
 inline float NormalizeYaw(float yaw)
@@ -824,7 +754,6 @@ float Freestand(C_BaseEntity *const local, CUserCmd* cmd)
 
 void DoAntiAimFake(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon)
 {
-    
     if (!vars.misc.antiaim)
         return;
     
@@ -850,8 +779,18 @@ void DoAntiAimFake(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapo
         return;
     
     
-    if (!vars.misc.fakelag)
-        *bSendPacket = cmd->command_number % 2;
+    if (vars.misc.aaY ==  VIEW_ANTIAIM_YAW::Desync1){
+        if (break_lby){
+            *bSendPacket = false;
+            cmd->viewangles.y += 180.f;
+            return;
+        }
+        if(*bSendPacket){
+             cmd->viewangles.y -= GetMaxDelta(local->GetAnimState());
+        }else{
+            cmd->viewangles.y += 180.f;
+        }
+    }
     
     if(vars.misc.desyncenabled)
     {
@@ -878,50 +817,6 @@ void DoAntiAimFake(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapo
     cmd->viewangles.ClampAngles();
 }
 
-void DoDesync(C_BaseEntity* local, CUserCmd* cmd, CCSGOAnimState* animState, C_BaseCombatWeapon* weapon){
-    if (!vars.misc.antiaim)
-        return;
-    
-    if (!local || !local->GetAlive())
-        return;
-    
-    if (!weapon)
-        return;
-    
-    if (weapon->IsGrenade() || weapon->IsBomb() || (weapon->IsKnife() && vars.aimbot.autoknife))
-        return;
-    
-    if (local->GetMoveType() == MOVETYPE_LADDER || local->GetMoveType() == MOVETYPE_NOCLIP)
-        return;
-    
-    if ((cmd->buttons & IN_ATTACK && weapon->GetNextPrimaryAttack() < (local->GetTickBase()  * pGlobals->interval_per_tick)) || (cmd->buttons & IN_ATTACK && weapon->IsGay()) || (cmd->buttons & IN_USE))
-    {
-        AntiAem::GRealAngle = AntiAem::GFakeAngle = cmd->viewangles;
-        return;
-    }
-    
-    if (local->GetImmune())
-        return;
-    
-    float maxDelta = GetMaxDelta(animState);
-    bool should_clamp = true;
-    Vector angle = cmd->viewangles;
-    Vector oldAngle = cmd->viewangles;
-    float oldForward = cmd->forwardmove;
-    float oldSideMove = cmd->sidemove;
-    if(vars.misc.aaY == VIEW_ANTIAIM_YAW::Desync1 && !bSendPacket) {
-        angle.y -= maxDelta;
-        NormalizeAngles(angle);
-    }
-    
-    if (should_clamp)
-    {
-        NormalizeAngles(angle);
-        ClampAngles(angle);
-    }
-    cmd->viewangles = angle;
-    CorrectMovement(oldAngle, cmd, oldForward, oldSideMove);
-}
 
 
 
@@ -1226,11 +1121,16 @@ void DoAntiaim(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, b
                     DesyncAA(cmd, local);
                 }
                 if(vars.misc.FaaY == VIEW_ANTIIAIM_FYAW::FakeTwoStep) {
-                    Vector angle;
-                    cmd->viewangles.y = angle.y + 180.f;
-                    
-                    if (bSendPacket){
-                        cmd->viewangles.y += GetMaxDelta12(local->GetAnimState());
+                   if (break_lby){
+                        *bSendPacket = false;
+                        cmd->viewangles.y += 180.f;
+                        return;
+                    }
+                    if(*bSendPacket){
+                         cmd->viewangles.y -= GetMaxDelta(local->GetAnimState());
+                    }else{
+                        cmd->viewangles.y += 180.f;
+                    }
                 }
                 
                 if(vars.misc.FaaY == VIEW_ANTIIAIM_FYAW::FakeLowerBody135) {
@@ -1357,8 +1257,6 @@ void DoAntiaim(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, b
                 
                 }
             }// End Of FakeAA Yaw
-        }
-        
     cmd->viewangles.ClampAngles();
 }
 

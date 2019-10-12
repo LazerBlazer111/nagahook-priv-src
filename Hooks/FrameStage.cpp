@@ -1,33 +1,29 @@
 #include "main.h"
-#include "skinchanger.h"
+#include "../Hacks/skinconfigchanger.hpp"
 #include "asuswalls.h"
-#include "LagComp.h"
 #include "../Backtrack.hpp"
 #include "../Hacks/nosmoke.hpp"
 #include "../Hacks/antiaim.h"
 #include "../Hacks/resolver.h"
 
-#include "../Hacks/namestealer.hpp"
+#include "../Hacks/namechanger.hpp"
 
 float GetMaxxDelta(CCSGOAnimState *animState ) {
     
-    float speedFraction = std::max(0.0f, std::min(animState->feetShuffleSpeed, 1.0f));
-    
-    float speedFactor = std::max(0.0f, std::min(1.0f, animState->feetShuffleSpeed2));
-    
-    float unk1 = ((animState->runningAccelProgress * -0.30000001) - 0.19999999) * speedFraction;
-    float unk2 = unk1 + 1.0f;
-    float delta;
-    
-    if (animState->duckProgress > 0)
-    {
-        unk2 += ((animState->duckProgress * speedFactor) * (0.5f - unk2));// - 1.f
+     float speedFraction = std::max(0.0f, std::min(animState->feetShuffleSpeed, 1.0f));
+        
+        float speedFactor = std::max(0.0f, std::min(1.0f, animState->feetShuffleSpeed2));
+        
+        float unk1 = ((animState->runningAccelProgress * -0.30000001) - 0.19999999) * speedFraction;
+        float unk2 = unk1 + 1.0f;
+        
+        if (animState->duckProgress > 0)
+        {
+            unk2 += ((animState->duckProgress * speedFactor) * (0.5f - unk2));// - 1.f
+        }
+        
+        return *(float*)((uintptr_t)animState + 0x3A4) * unk2;
     }
-    
-    delta = *(float*)((uintptr_t)animState + 0x3A4) * unk2;
-    
-    return abs(delta);
-}
 
 void RemoveFlash(ClientFrameStage_t stage)
 {
@@ -55,26 +51,6 @@ void RemoveFlash(ClientFrameStage_t stage)
     }
     
 }
-void FakePing()
-{
-    if(!vars.misc.fakeping)
-        return;
-    
-    static auto net_fakelag = pCvar->FindVar("net_fakelag"); // nasa shit
-    if (vars.misc.fakepingtype == 1)
-        net_fakelag->SetValue(vars.misc.fakepingvalue);
-    else if (vars.misc.fakepingtype == 2)
-    {
-        if (pInputSystem->IsButtonDown(KEY_P))
-            net_fakelag->SetValue(vars.misc.fakepingvalue);
-        else net_fakelag->SetValue(0);
-    }
-    else
-    {
-        net_fakelag->SetValue(0);
-    }
-}
-
 void hkFrameStage(void* thisptr, ClientFrameStage_t curStage)
 {
     auto* local = pEntList->GetClientEntity(pEngine->GetLocalPlayer());
@@ -132,10 +108,7 @@ void hkFrameStage(void* thisptr, ClientFrameStage_t curStage)
     }
     
     if(vars.visuals.skinc) {
-        skinchanger->FrameStageNotify(curStage);
-    }
-    if(vars.misc.updateskins) {
-        skinchanger->ForceSkins();
+         MakeSkinChanger(curStage);
     }
     
     
@@ -144,7 +117,7 @@ void hkFrameStage(void* thisptr, ClientFrameStage_t curStage)
     
     if(curStage == FRAME_NET_UPDATE_POSTDATAUPDATE_END)
     {
-        smoke->remove_smoke(curStage);
+        remove_smoke(curStage);
     }
     
     

@@ -1,5 +1,5 @@
 #include "cfg.h"
-#include "../Hacks/skinchanger.h"
+#include "../Hacks/skinconfigchanger.hpp"
 class Config
 {
 public:
@@ -70,7 +70,8 @@ public:
     void LoadSkins();
     void InitSkins();
     void UpdateSkins();
-    cSkin GetWeaponConfiguration(const char *section);
+    SkinClass GetWeaponConfiguration(const char *section);
+    
     bool HasWeaponConfiguration(const char* section);
     void getConfig(int ConfigNo);
     

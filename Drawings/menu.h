@@ -15,6 +15,7 @@ public:
     void renderSlider(int x, int y, int w, const char* szString, float& value, int max, int min);
     void renderCombo(int x, int y, int w, int h, const char* szString, vector<string> szValue, int& currValue, bool* bOpend);
     void renderButton(int x, int y, const char* szString, bool* var);
+    void renderButton1(int x, int y, const char* szString, bool* var);
     void render_tab_section(int x, int y, int w, int h);
     void drawcolorpicker(int x, int y, const char *szString, Color &col);
     void playerbutton(int x, int y, int w, int h, int index, int& playercount, const char* szString);

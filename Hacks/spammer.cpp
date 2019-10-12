@@ -4,8 +4,8 @@
 
 vector<string> spamMessages =
 {   // Add messages here
-    "D E A D |  デッド",
-    "fuck y'all niggers get D E A D |  デッド",
+    "Afk that’s why I turned this shit on",
+    "Auto shoot is on so leave me alone",
     
 };
 

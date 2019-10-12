@@ -51,16 +51,72 @@ void asuswalls(ClientFrameStage_t stage) {
 }
 void FullBright(){
     
-   
+    if (!pEngine->IsConnected() || !pEngine->IsInGame())
+        return;
+    
+    static ConVar* fullbright = pCvar->FindVar("mat_fullbright");
+    fullbright->nFlags &= ~FCVAR_CHEAT;
+    
+    if (vars.misc.fullbright) {
+        fullbright->SetValue(1);
+    }
+    else{
+        fullbright->SetValue(0);
+    }
 }
 void InverseRagdoll(){
     
+    if (!pEngine->IsConnected() || !pEngine->IsInGame())
+        return;
     
+    static ConVar* inverseragdoll = pCvar->FindVar("cl_ragdoll_gravity");
+    inverseragdoll->nFlags &= ~FCVAR_CHEAT;
+    
+    if (vars.misc.meme) {
+        inverseragdoll->SetValue(-600);
+    }
+    else{
+        inverseragdoll->SetValue(600);
+    }
 }
 void ViewmodelHVH(){
     
-}
+    if (!pEngine->IsConnected() || !pEngine->IsInGame())
+        return;
     
+    static ConVar* inverseragdoll1 = pCvar->FindVar("sv_competitive_minspec");
+       static ConVar* inverseragdoll2 = pCvar->FindVar("viewmodel_offset_x");
+       static ConVar* inverseragdoll3 = pCvar->FindVar("viewmodel_offset_y");
+       static ConVar* inverseragdoll4 = pCvar->FindVar("viewmodel_offset_z");
+       static ConVar* inverseragdoll5 = pCvar->FindVar("viewmodel_fov");
+       static ConVar* inverseragdoll6 = pCvar->FindVar("cl_bobcycle");
+       static ConVar* inverseragdoll7 = pCvar->FindVar("cl_wpn_sway_scale");
+       static ConVar* inverseragdoll8 = pCvar->FindVar("fov_cs_debug");
+       inverseragdoll1->nFlags &= ~FCVAR_CHEAT;
+       inverseragdoll6->nFlags &= ~FCVAR_CHEAT;
+       inverseragdoll7->nFlags &= ~FCVAR_CHEAT;
+       inverseragdoll8->nFlags &= ~FCVAR_CHEAT;
+       if (vars.misc.hvhviewmodel) {
+           inverseragdoll1->SetValue(0);
+           inverseragdoll2->SetValue(vars.misc.viewmodelx);
+           inverseragdoll3->SetValue(vars.misc.viewmodely);
+           inverseragdoll4->SetValue(-10);
+           inverseragdoll5->SetValue(vars.misc.viewmodelfov);
+           inverseragdoll6->SetValue(0);
+           inverseragdoll7->SetValue(0.1f);
+           if(vars.misc.thirdperson && vars.misc.noscope){
+               inverseragdoll8->SetValue(100);
+           }else{
+               inverseragdoll8->SetValue(0);
+           }
+       }
+       else{
+           inverseragdoll1->SetValue(1);
+           inverseragdoll6->SetValue(0.98f);
+           inverseragdoll7->SetValue(1.6f);
+           inverseragdoll8->SetValue(0);
+       }
+}
 void NightMode()
 {
     static bool nightmode_performed = false, nightmode_lastsetting;

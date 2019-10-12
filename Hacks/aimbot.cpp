@@ -7,19 +7,9 @@
 #include "autoshoot.h"
 #include "antiaim.h"
 #include "autowall.h"
-#include "autostop.hpp"
 #include "logshots.hpp"
 
 C_BaseEntity* Aimbot::curTarget = nullptr;
-
-void AutoSlow(C_BasePlayer* player, C_BaseCombatWeapon* active_weapon, CUserCmd* cmd)
-{
-    
-
-    
-    
-   
-}
 
 
 template<class T, class U>
@@ -57,37 +47,41 @@ float LagFix()
     return std::max(lerp, ratio / updaterate);
 }
 
-int MakeHitscan(C_BaseEntity* entity)
+bool shouldBaim(C_BaseEntity* pEnt){
+    
+    auto LocalPlayer = pEntList->GetClientEntity(pEngine->GetLocalPlayer());
+
+    if (LocalPlayer->GetVelocity().Length2D() > 125 && vars.aimbot.baim_high_inaccuracy)
+        return true;
+
+    if (!(pEnt->GetFlags() & FL_ONGROUND) && vars.aimbot.baim_in_air)
+        return true;
+    
+    if (vars.aimbot.baim_slow_walk && (pEnt->GetVelocity().Length2D() > 15 && pEnt->GetVelocity().Length2D() < 150))
+        return true;
+    
+    if (pEnt->GetHealth() <= vars.aimbot.bodyaim_health + 1 && vars.aimbot.bodyaim_health > 0 && vars.aimbot.baimhp)
+        return true;
+
+}
+
+std::vector<Hitbox> Aimbot::get_target_hitboxes(C_BaseEntity* entity)
 {
-    vector<int> hitboxes;
-    if(vars.aimbot.hitscan > 0)
-    {
-        if(vars.aimbot.baimhp){
-            int huso = (entity->GetHealth());
-            int health = vars.aimbot.baimxhp;
-            
-            if (huso < health) {
-                
-                hitboxes.push_back(HITBOX_PELVIS);
-                hitboxes.push_back(HITBOX_BELLY);
-                hitboxes.push_back(HITBOX_THORAX);
-                hitboxes.push_back(HITBOX_LOWER_CHEST);
-                hitboxes.push_back(HITBOX_UPPER_CHEST);
-                hitboxes.push_back(HITBOX_RIGHT_THIGH);
-                hitboxes.push_back(HITBOX_LEFT_THIGH);
-                hitboxes.push_back(HITBOX_RIGHT_CALF);
-                hitboxes.push_back(HITBOX_LEFT_CALF);
-                hitboxes.push_back(HITBOX_RIGHT_FOOT);
-                hitboxes.push_back(HITBOX_LEFT_FOOT);
-                hitboxes.push_back(HITBOX_RIGHT_HAND);
-                hitboxes.push_back(HITBOX_LEFT_HAND);
-                hitboxes.push_back(HITBOX_RIGHT_UPPER_ARM);
-                hitboxes.push_back(HITBOX_RIGHT_FOREARM);
-                hitboxes.push_back(HITBOX_LEFT_UPPER_ARM);
-                hitboxes.push_back(HITBOX_LEFT_FOREARM);
-            }
-        }
-        
+    std::vector<Hitbox> hitboxes;
+    bool Baim = shouldBaim(entity);
+    if(Baim){
+            hitboxes.push_back(HITBOX_PELVIS);
+            hitboxes.push_back(HITBOX_THORAX);
+            hitboxes.push_back(HITBOX_LOWER_CHEST);
+            hitboxes.push_back(HITBOX_UPPER_CHEST);
+
+            hitboxes.push_back(HITBOX_RIGHT_FOOT);
+            hitboxes.push_back(HITBOX_LEFT_FOOT);
+            hitboxes.push_back(HITBOX_RIGHT_UPPER_ARM);
+            hitboxes.push_back(HITBOX_LEFT_UPPER_ARM);
+            hitboxes.push_back(HITBOX_LEFT_THIGH);
+            hitboxes.push_back(HITBOX_RIGHT_THIGH);
+    }else{
         if (vars.aimbot.hitscantype == HITSCAN::low)
         { // low
             hitboxes.push_back(HITBOX_HEAD);
@@ -159,38 +153,104 @@ int MakeHitscan(C_BaseEntity* entity)
             hitboxes.push_back(HITBOX_LOWER_CHEST);
             hitboxes.push_back(HITBOX_UPPER_CHEST);
         }
+        if (vars.aimbot.hitscantype == HITSCAN::head){
+            hitboxes.push_back(HITBOX_HEAD);
+        }
+        if (vars.aimbot.hitscantype == HITSCAN::upperbody){
+            hitboxes.push_back(HITBOX_HEAD);
+            hitboxes.push_back(HITBOX_BELLY);
+            hitboxes.push_back(HITBOX_PELVIS);
+        }
+        if (vars.aimbot.hitscantype == HITSCAN::lowerbody){
+            hitboxes.push_back(HITBOX_LOWER_CHEST);
+            hitboxes.push_back(HITBOX_BELLY);
+            hitboxes.push_back(HITBOX_PELVIS);
+            hitboxes.push_back(HITBOX_LEFT_THIGH);
+            hitboxes.push_back(HITBOX_RIGHT_THIGH);
+            hitboxes.push_back(HITBOX_RIGHT_FOOT);
+            hitboxes.push_back(HITBOX_LEFT_FOOT);
+            hitboxes.push_back(HITBOX_RIGHT_UPPER_ARM);
+            hitboxes.push_back(HITBOX_LEFT_UPPER_ARM);
+            hitboxes.push_back(HITBOX_RIGHT_FOREARM);
+            hitboxes.push_back(HITBOX_LEFT_FOREARM);
+            hitboxes.push_back(HITBOX_RIGHT_HAND);
+            hitboxes.push_back(HITBOX_LEFT_HAND);
+        }
+        if (vars.aimbot.hitscantype == HITSCAN::arms){
+            hitboxes.push_back(HITBOX_RIGHT_UPPER_ARM);
+            hitboxes.push_back(HITBOX_LEFT_UPPER_ARM);
+            hitboxes.push_back(HITBOX_RIGHT_FOREARM);
+            hitboxes.push_back(HITBOX_LEFT_FOREARM);
+            hitboxes.push_back(HITBOX_RIGHT_HAND);
+            hitboxes.push_back(HITBOX_LEFT_HAND);
+        }
+        if (vars.aimbot.hitscantype == HITSCAN::legs){
+            hitboxes.push_back(HITBOX_PELVIS);
+            hitboxes.push_back(HITBOX_LEFT_THIGH);
+            hitboxes.push_back(HITBOX_RIGHT_THIGH);
+            hitboxes.push_back(HITBOX_RIGHT_FOOT);
+            hitboxes.push_back(HITBOX_LEFT_FOOT);
+        }
+        if(vars.aimbot.hitscantype == HITSCAN::baimlowerbody){
+            hitboxes.push_back(HITBOX_LOWER_CHEST);
+            hitboxes.push_back(HITBOX_BELLY);
+            hitboxes.push_back(HITBOX_PELVIS);
+            hitboxes.push_back(HITBOX_LEFT_THIGH);
+            hitboxes.push_back(HITBOX_RIGHT_THIGH);
+            hitboxes.push_back(HITBOX_RIGHT_FOOT);
+            hitboxes.push_back(HITBOX_LEFT_FOOT);
+            hitboxes.push_back(HITBOX_RIGHT_UPPER_ARM);
+            hitboxes.push_back(HITBOX_LEFT_UPPER_ARM);
+            hitboxes.push_back(HITBOX_RIGHT_FOREARM);
+            hitboxes.push_back(HITBOX_LEFT_FOREARM);
+            hitboxes.push_back(HITBOX_RIGHT_HAND);
+            hitboxes.push_back(HITBOX_LEFT_HAND);
+            hitboxes.push_back(HITBOX_THORAX);
+            hitboxes.push_back(HITBOX_UPPER_CHEST);
+            hitboxes.push_back(HITBOX_RIGHT_CALF);
+            hitboxes.push_back(HITBOX_LEFT_CALF);
+        }
     }
+    return hitboxes;
+}
 
+int MakeHitscan(C_BaseEntity* entity, CUserCmd* cmd, C_BaseEntity* local)
+{
+    auto hitboxes = Aimbot::get_target_hitboxes(entity);
+    int best_damage = 0;
+    int best_hitbox = HITBOX_HEAD;
+    bool Baim = shouldBaim(entity);
     
-    if(vars.aimbot.hitscan)
+    for(auto hitbox : hitboxes)
     {
-        
-        int highestdamage_hitbox = 0;
-        int highestdamage = 0;
-        
-        for(auto hit : hitboxes)
+        if(vars.aimbot.autowall || vars.aimbot.hitscan)
         {
-            Vector vDest = GetHitboxPosition(entity, hit);
-            float thisDamage = 0.f;
+            Vector aim_pos = GetHitboxPosition(entity, hitbox);
+            
+            if(aim_pos.IsZero())
+                continue;
+            
             Autowall::FireBulletData data;
             
-            thisDamage = Autowall::GetDamage(vDest, true, data);
+            int damage = Autowall::GetDamage(aim_pos, true, data);
             
-            if(thisDamage > highestdamage)
+            if(damage > best_damage)
             {
-                highestdamage = thisDamage;
-                highestdamage_hitbox = hit;
+                best_damage = damage;
+                best_hitbox = hitbox;
             }
-            
+            if (Baim && hitbox != 0 && hitbox != 25 && hitbox != 26 && hitbox != 27 && damage >= (entity->GetHealth() + 10))
+            {
+                Baim = true;
+            }
         }
-        
-        return highestdamage_hitbox;
+        else
+        {
+            if(IsVisible(local, entity))
+                return hitbox;
+        }
     }
-    else
-    {
-        return vars.aimbot.hitbox;
-    }
-    
+    return best_hitbox;
 }
 
 void DoAim(CUserCmd* pCmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, float& flForward, float& flSide, C_BasePlayer* player)
@@ -245,7 +305,7 @@ void DoAim(CUserCmd* pCmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, floa
         
         Aimbot::curTarget = entity;
         
-        vFrom = GetHitboxPosition(entity, MakeHitscan(entity));
+        vFrom = GetHitboxPosition(entity, MakeHitscan(entity, pCmd, local));
         
         vTo = CalcAngle(eyepos, vFrom);
         
@@ -261,7 +321,7 @@ void DoAim(CUserCmd* pCmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, floa
         }
         
         atTargets = vTo;
-        
+       
         if(canHit || isVISIBLE)
         {
             if(GetFOV(pCmd->viewangles, local->GetEyePosition(), vFrom) <= vars.aimbot.FovToPlayer)
@@ -277,11 +337,11 @@ void DoAim(CUserCmd* pCmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, floa
                     pCmd->buttons |= IN_BULLRUSH | IN_DUCK;
                 }
                 
-                if (vars.aimbot.autoscope && weapon->GetCSWpnData()->m_iZoomLevels > 0 && !local->IsScoped() && weapon->IsSnipScope()) //&& !local->IsScoped())
-                {
-                    pCmd->buttons |= IN_ATTACK2;
-                    return;
-                }
+                  if (vars.aimbot.autoscope && !local->IsScoped() && (weapon->IsSnipScope() || *weapon->GetItemDefinitionIndex() == WEAPON_G3SG1 || *weapon->GetItemDefinitionIndex() ==  WEAPON_SCAR20 || *weapon->GetItemDefinitionIndex() ==  WEAPON_SSG08 || *weapon->GetItemDefinitionIndex() ==  WEAPON_AWP)) //&& !local->IsScoped())
+                                {
+                                        pCmd->buttons |= IN_ATTACK2;
+                                        return;
+                                }
                 if (vars.aimbot.autostop){
                     pCmd->forwardmove = 0.f;
                     pCmd->sidemove = 0.f;
@@ -316,7 +376,8 @@ void DoAim(CUserCmd* pCmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon, floa
                 
                 if(pCmd->buttons & IN_ATTACK)
                 {
-                    pCmd->tick_count = TIME_TO_TICKS(entity->GetSimulationTime() + LagFix());
+                     pCmd->tick_count = TIME_TO_TICKS(entity->GetSimulationTime() + LagFix());
+                    
                     if(!vars.aimbot.silent)
                     {
                         pCmd->viewangles = vTo;

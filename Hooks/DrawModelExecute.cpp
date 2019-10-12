@@ -279,9 +279,9 @@ void hkDrawModelExecute(void* thisptr, void* context, void *state, const ModelRe
     static IMaterial* Plastic = pMatSystem->FindMaterial("models/inventory_items/trophy_majors/crystal_blue", TEXTURE_GROUP_OTHER);
     static IMaterial* Glass = pMatSystem->FindMaterial("models/inventory_items/cologne_prediction/cologne_prediction_glass", TEXTURE_GROUP_OTHER);
     static IMaterial* Gold = pMatSystem->FindMaterial("models/inventory_items/trophy_majors/crystal_clear", TEXTURE_GROUP_OTHER);
-    static IMaterial* crystal = pMatSystem->FindMaterial("models/inventory_items/trophy_majors/gloss", TEXTURE_GROUP_OTHER);
+    static IMaterial* crystal = pMatSystem->FindMaterial("models/inventory_items/dogtags/dogtags_outline", TEXTURE_GROUP_OTHER);
     static IMaterial* Mp3 = pMatSystem->FindMaterial("models/inventory_items/wildfire_gold/wildfire_gold_detail", TEXTURE_GROUP_OTHER);
-    static IMaterial* Random = pMatSystem->FindMaterial("models/inventory_items/trophy_majors/gloss", TEXTURE_GROUP_OTHER);
+    static IMaterial* Random = pMatSystem->FindMaterial("dev/glow_armsrace.vmt", TEXTURE_GROUP_OTHER);
     static IMaterial* Random1 = pMatSystem->FindMaterial("models/props_shacks/fishing_net01", TEXTURE_GROUP_OTHER);
     static IMaterial* Random2 = pMatSystem->FindMaterial("models/props_foliage/urban_tree03_branches", TEXTURE_GROUP_OTHER);
     static IMaterial* Random3 = pMatSystem->FindMaterial("models/inventory_items/trophy_majors/gloss", TEXTURE_GROUP_OTHER);
@@ -347,7 +347,7 @@ void hkDrawModelExecute(void* thisptr, void* context, void *state, const ModelRe
                     return Random3;
             }();
             
-            materialCheckFirst->ColorModulate(vars.colors.weapon);
+            materialCheckFirst->ColorModulate(Color(vars.visuals.weapon_red, vars.visuals.weapon_green, vars.visuals.weapon_blue, 255));
             materialCheckFirst->AlphaModulate(vars.visuals.weaponchams_alpha / 255.f);
             pModelRender->ForcedMaterialOverride(materialCheckFirst);
             CallOriginalModel(thisptr, context, state, pInfo, pCustomBoneToWorld);
@@ -385,7 +385,7 @@ void hkDrawModelExecute(void* thisptr, void* context, void *state, const ModelRe
                     return Random3;
             }();
             
-            materialCheckFirst->ColorModulate(vars.colors.hands);
+            materialCheckFirst->ColorModulate(Color(vars.visuals.arm_red, vars.visuals.arm_green, vars.visuals.arm_blue, 255));
             materialCheckFirst->AlphaModulate(vars.visuals.handchams_alpha / 255.f);
             pModelRender->ForcedMaterialOverride(materialCheckFirst);
             CallOriginalModel(thisptr, context, state, pInfo, pCustomBoneToWorld);
@@ -402,24 +402,6 @@ void hkDrawModelExecute(void* thisptr, void* context, void *state, const ModelRe
             {
                 if(entity->GetHealth() > 0)
                 {
-                    
-                    Color ColorIgnorez = [&]() -> Color
-                    {
-                        if(entity->GetTeam() == 2)
-                            return vars.colors.tchams;
-                        else if(entity->GetTeam() == 3)
-                            return vars.colors.ctchams;
-                        else if(pEngine->GetLocalPlayer() == 3)
-                            return vars.colors.ctchams;
-                    }();
-                    
-                    Color ColorNonIgnorez = [&]() -> Color
-                    {
-                        if(entity->GetTeam() == 2)
-                            return vars.colors.tchams_ign;
-                        else if(entity->GetTeam() == 3)
-                            return vars.colors.ctchams_ign;
-                    }();
                     
                     Color FakeLagColor = [&]() -> Color
                     {
@@ -608,12 +590,29 @@ void hkDrawModelExecute(void* thisptr, void* context, void *state, const ModelRe
                         if(!vars.visuals.visonly)
                         {
                             secondLayer->AlphaModulate(vars.visuals.playerchams_alpha / 255.f);
-                            secondLayer->ColorModulate(ColorNonIgnorez);
+                            if(entity->GetTeam() == 2){
+                                 secondLayer->ColorModulate(Color(vars.visuals.Tchamhid_red, vars.visuals.Tchamhid_green, vars.visuals.Tchamhid_blue, 255));
+                            }
+                            else if(entity->GetTeam() == 3){
+                                secondLayer->ColorModulate(Color(vars.visuals.CTchamhid_red, vars.visuals.CTchamhid_green, vars.visuals.CTchamhid_blue, 255));
+                            }
+                            else if(pEngine->GetLocalPlayer() == 3){
+                                secondLayer->ColorModulate(Color(vars.visuals.CTchamhid_red, vars.visuals.CTchamhid_green, vars.visuals.CTchamhid_blue, 255));
+                            }
                             pModelRender->ForcedMaterialOverride(secondLayer);
                             CallOriginalModel(thisptr, context, state, pInfo, pCustomBoneToWorld);
                         }
                         
-                        materialCheckFirst->ColorModulate(ColorIgnorez);
+                        if(entity->GetTeam() == 2){
+                             materialCheckFirst->ColorModulate(Color(vars.visuals.Tcham_red, vars.visuals.Tcham_green, vars.visuals.Tcham_blue, 255));
+                        }
+                        else if(entity->GetTeam() == 3){
+                            materialCheckFirst->ColorModulate(Color(vars.visuals.CTcham_red, vars.visuals.CTcham_green, vars.visuals.CTcham_blue, 255));
+                        }
+                        else if(pEngine->GetLocalPlayer() == 3){
+                            materialCheckFirst->ColorModulate(Color(vars.visuals.CTcham_red, vars.visuals.CTcham_green, vars.visuals.CTcham_blue, 255));
+                        }
+                       
                         materialCheckFirst->AlphaModulate(vars.visuals.playerchams_alpha / 255.f);
                         pModelRender->ForcedMaterialOverride(materialCheckFirst);
                         CallOriginalModel(thisptr, context, state, pInfo, pCustomBoneToWorld);

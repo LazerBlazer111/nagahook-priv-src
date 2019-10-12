@@ -5,7 +5,7 @@
 
 #include "menu.h"
 #include "Config.h"
-#include "../Hacks/namestealer.hpp"
+#include "../Hacks/namechanger.hpp"
 
 cMenu* menu = new cMenu();
 Config cfg;
@@ -29,6 +29,14 @@ Color greycolor = Color(189, 195, 199, 255);
 Color FontColorDeselect = Color(190, 190, 190, 255);
 
 bool WasPressed, WasReleased;
+
+static std::string GetLocalName()
+{
+    player_info_t playerInfo;
+    pEngine->GetPlayerInfo(pEngine->GetLocalPlayer(), &playerInfo);
+    return std::string(playerInfo.name);
+}
+
 auto Pressed (ButtonCode_t code) -> void {
     
     if (pInputSystem->IsButtonDown(code)) {
@@ -265,7 +273,30 @@ void cMenu::renderCombo(int x, int y, int w, int h, const char* szString, vector
 
 void cMenu::renderButton(int x, int y, const char* szString, bool* var) {
     
-    int w = 60;
+      int w = 60;
+      int h = 20;
+      
+      if(draw->inArea(x, y, w, h)) {
+          if(WasPressed) {
+              *var = true;
+          }
+      } else {
+          *var = false;
+      }
+      
+      bool bHovering = draw->inArea(x, y, w, h);
+      draw->drawgradient(x, y, w, h, bHovering ? Color(37, 52, 60, 255) : Color(25, 25, 25, 255), Color(25, 25, 25, 255));
+      draw->drawbox(x + 1, y + 1, w - 2, h - 2, bHovering ? Color(64, 91, 106, 255) : Color(67, 67, 67, 255));
+      draw->drawbox(x, y, w, h, bHovering ? Color(25, 35, 40, 255) : Color(9, 9, 9, 255));
+      
+      draw->drawstring(x + w / 2, y + h / 2, FontColor, framefont, szString, true);
+      
+    
+}
+
+void cMenu::renderButton1(int x, int y, const char* szString, bool* var) {
+    
+    int w = 175;
     int h = 20;
     
     if(draw->inArea(x, y, w, h)) {
@@ -277,9 +308,7 @@ void cMenu::renderButton(int x, int y, const char* szString, bool* var) {
     }
     
     bool bHovering = draw->inArea(x, y, w, h);
-    draw->drawgradient(x, y, w, h, bHovering ? Color(37, 52, 60, 255) : Color(25, 25, 25, 255), Color(25, 25, 25, 255));
     draw->drawbox(x + 1, y + 1, w - 2, h - 2, bHovering ? Color(64, 91, 106, 255) : Color(67, 67, 67, 255));
-    draw->drawbox(x, y, w, h, bHovering ? Color(25, 35, 40, 255) : Color(9, 9, 9, 255));
     
     draw->drawstring(x + w / 2, y + h / 2, FontColor, framefont, szString, true);
     
@@ -302,23 +331,6 @@ void cMenu::playerbutton(int x, int y, int w, int h, int index, int& playercount
     draw->drawbox(x, y, w, h, Color::Black());
     draw->drawstring(x + w / 2, y + h / 2, FontColor, mFont, szString, true);
 }
-
-int RainbowR= 100;
-int RainbowG= 100;
-int RainbowB= 100;
-float RainbowTexts= 100;
-//--------------------------------------------------------------------
-void DoRainBow(){
-    if(RainbowTexts!=100){
-        RainbowR-=2,RainbowG-=3,RainbowB-=3;
-    }
-    
-    if(RainbowTexts!=255){
-        RainbowR+=2,RainbowG+=3,RainbowB+=4;
-    }
-}
-//--------------------------------------------------------------------
-#define RAINBOW            D3DCOLOR_ARGB(255, RainbowR, RainbowG, RainbowB)
 
 void cMenu::render_section(int x, int y, int w, int h, const char* label)
 {
@@ -617,8 +629,12 @@ void cMenu::renderAntiAim(int x, int y) {
     this->renderCheckbox(x - 8, y + 135, "Hitchance", &vars.aimbot.hitchance);
     this->renderSlider(x + 10, y + 155, 150, "", vars.aimbot.accuracyhithcance, 100, 0);
     this->renderSlider(x + 10, y + 180, 150, "Pointscale", vars.aimbot.pointscale, 100, 0);
-    this->renderCheckbox(x - 8, y + 200, "Baim Under x HP", &vars.aimbot.baimhp);
-    this->renderSlider(x + 10, y + 220, 150, "", vars.aimbot.baimxhp, 100, 0);
+    draw->drawstring(x + 27, y + 200 + 10, Color::White(), osFont, "Baim options", true);
+    this->renderCheckbox(x - 8, y + 220, "Baim Under x HP", &vars.aimbot.baimhp);
+    this->renderSlider(x + 10, y + 240, 150, "", vars.aimbot.bodyaim_health, 100, 0);
+    this->renderCheckbox(x - 8, y + 270, "Baim if in air", &vars.aimbot.baim_in_air);
+    this->renderCheckbox(x - 8, y + 290, "Baim if not accurate", &vars.aimbot.baim_high_inaccuracy);
+    this->renderCheckbox(x - 8, y + 310, "Baim if local slow-walk", &vars.aimbot.baim_slow_walk);
     
     this->renderCheckbox(x + 444, y + 15, "Anti-Aim", &vars.misc.antiaim);
     this->renderCheckbox(x + 444, y + 35, "Show Real Angles", &vars.misc.thirdpersonmode);
@@ -651,11 +667,6 @@ void cMenu::renderAntiAim(int x, int y) {
     
     this->renderCheckbox(x + 444, y + 375, "Yaw Enabled (Desync)", &vars.misc.desyncenabled);
     this->renderCheckbox(x + 444, y + 395, "Freestanding (Desync)", &vars.misc.freestanding);
-    //this->renderCheckbox(x + 444, y + 415, "Legit AA", &vars.misc.legitaa);
-    //this->renderSlider(x + 444, y + 435, 115, "additive (legitaa)", vars.misc.legitaadditive, 180, 0);
-    //this->renderCheckbox(x + 444, y + 465, "Static legit aa", &vars.misc.legitaastatic);
-    
-    //this->renderCheckbox(x - 15, y + 160, "Freestand", &vars.aimbot.freestand);
     this->renderCheckbox(x + 235, y + 15, "Fakewalk", &vars.aimbot.fakewalk);
     this->renderCombo(x + 235, y + 32, 90, 20, "Fakewalk", fakewalk, vars.aimbot.fakewalktype, &vars.fakewalk_opend);
     this->renderCheckbox(x + 235, y + 55, "Auto Scope", &vars.aimbot.autoscope);
@@ -695,7 +706,6 @@ void cMenu::renderAntiAim(int x, int y) {
     Resolve.push_back("Ayyware");
     Resolve.push_back("Spacehook");
     Resolve.push_back("MethJjansen");
-    Resolve.push_back("Ayyware2");
     
     this->renderCheckbox(x + 235, y + 205, "Yaw Resolver", &vars.aimbot.Yawresolver);
     
@@ -864,11 +874,11 @@ void cMenu::renderVis(int x, int y) {
     this->renderCheckbox(x + 444, y + 155, "Left-Hand Knife", &vars.visuals.inverseragdoll);
     this->renderCheckbox(x + 444, y + 175, "Sniper Crosshair", &vars.misc.snipercrosshair);
     
-    this->renderCheckbox(x + 444, y + 195, "Show Enemies Log", &vars.misc.showenemieslog);
-    this->renderCheckbox(x + 444, y + 215, "Show Allies Log", &vars.misc.showallieslog);
+    this->renderCheckbox(x + 444, y + 195, "Enemy Event Log", &vars.misc.showenemieslog);
+    this->renderCheckbox(x + 444, y + 215, "Allies Event Log", &vars.misc.showallieslog);
     this->renderSlider(x + 444, y + 245, 115, "Logger Duration", vars.misc.loggerduration, 5000.f, 0.f);
     this->renderSlider(x + 444, y + 275, 115, "Logger Lines", vars.misc.loggerlines, 15, 0);
-    this->renderCheckbox(x + 444, y + 315, "Show local player", &vars.misc.showlocalplayer);
+    this->renderCheckbox(x + 444, y + 315, "Local Event Log", &vars.misc.showlocalplayer);
     
     this->renderCheckbox(x + 444, y + 335, "Dlights", &vars.misc.dlight);
     this->renderCheckbox(x + 444, y + 355, "Dlight enemy", &vars.misc.dlightenemy);
@@ -932,10 +942,12 @@ void cMenu::renderMisc(int x, int y) {
     
     this->renderCheckbox(x + 444, y + 225, "Thirdperson & Real Angles", &vars.misc.thirdpersonkeybindez);
     this->renderCheckbox(x + 444, y + 245, "Grenade Prediction", &vars.misc.grenadepred);
-    /*this->renderCheckbox(x + 444, y + 265, "Footstep", &vars.misc.footstep);
-    this->renderSlider(x + 444, y + 285, 115, "Footstep Duration", vars.misc.soundtime, 5000, 0);
-    this->renderButton(x + 444, y + 305, "Hide Name", &vars.aimbot.namestealer);*/
-    
+
+    this->renderButton1(x + 454, y + 265, "Hide Name", &vars.aimbot.hidename);
+    this->renderButton1(x + 454, y + 285, "Your Name", &vars.aimbot.yourname);
+    this->renderButton1(x + 454, y + 305, "Fake Vote (Hide Name First)", &vars.aimbot.fakevote);
+    this->renderButton1(x + 454, y + 325, "Random Name Stealer", &vars.aimbot.namestealer);
+    this->renderButton1(x + 454, y + 345, "Fake Ban (hide then set name)", &vars.aimbot.fakeban);
     
 
     
@@ -960,20 +972,44 @@ void cMenu::renderColors(int x, int y) {
     this->renderCombo(x, y + 300 + 14, 125, 20, "CT Colours", Colors, vars.colors.combo, &vars.colors_opend);
     
     if(vars.colors.combo == 0) {
-        this->drawcolorpicker(x, y + 30, "CT Box", vars.colors.ctbox);
-        this->drawcolorpicker(x, y + 170, "CT BoxIgn", vars.colors.ctbox_ign);
-        this->drawcolorpicker(x + 235, y + 30, "CT Chams", vars.colors.ctchams);
-        this->drawcolorpicker(x + 235, y + 170, "CT ChamIgn", vars.colors.ctchams_ign);
+        vars.colors.ctchams = Color(vars.visuals.CTcham_red, vars.visuals.CTcham_green, vars.visuals.CTcham_blue, 255);
+        this->renderSlider_c(x + 5, y + 30, 150, "Red", vars.visuals.CTcham_red, 255, 0, vars.colors.ctchams);
+        this->renderSlider_c(x + 5, y + 50, 150, "Green", vars.visuals.CTcham_green, 255, 0, vars.colors.ctchams);
+        this->renderSlider_c(x + 5, y + 70, 150, "Blue", vars.visuals.CTcham_blue, 255, 0, vars.colors.ctchams);
+        draw->drawstring(x, y + 10, FontColor, mFont, "Visible CT Chams");
+        
+        vars.colors.ctchams_ign = Color(vars.visuals.CTchamhid_red, vars.visuals.CTchamhid_green, vars.visuals.CTchamhid_blue, 255);
+        this->renderSlider_c(x + 235, y + 30, 150, "Red", vars.visuals.CTchamhid_red, 255, 0, vars.colors.ctchams_ign);
+        this->renderSlider_c(x + 235, y + 50, 150, "Green", vars.visuals.CTchamhid_green, 255, 0, vars.colors.ctchams_ign);
+        this->renderSlider_c(x + 235, y + 70, 150, "Blue", vars.visuals.CTchamhid_blue, 255, 0, vars.colors.ctchams_ign);
+        draw->drawstring(x + 230, y + 10, FontColor, mFont, "Hidden CT Chams");
     }
     if(vars.colors.combo == 1) {
-        this->drawcolorpicker(x, y + 30, "T Box", vars.colors.tbox);
-        this->drawcolorpicker(x, y + 170, "T BoxIgn", vars.colors.tbox_ign);
-        this->drawcolorpicker(x + 235, y + 30, "T Chams", vars.colors.tchams);
-        this->drawcolorpicker(x + 235, y + 170, "T ChamIgn", vars.colors.tchams_ign);
+       vars.colors.tchams = Color(vars.visuals.Tcham_red, vars.visuals.Tcham_green, vars.visuals.Tcham_blue, 255);
+        this->renderSlider_c(x + 5, y + 30, 150, "Red", vars.visuals.Tcham_red, 255, 0, vars.colors.tchams);
+        this->renderSlider_c(x + 5, y + 50, 150, "Green", vars.visuals.Tcham_green, 255, 0, vars.colors.tchams);
+        this->renderSlider_c(x + 5, y + 70, 150, "Blue", vars.visuals.Tcham_blue, 255, 0, vars.colors.tchams);
+        draw->drawstring(x,y + 10, FontColor, mFont, "Visible T Chams");
+        
+        vars.colors.tchams_ign = Color(vars.visuals.Tchamhid_red, vars.visuals.Tchamhid_green, vars.visuals.Tchamhid_blue, 255);
+        this->renderSlider_c(x + 235, y + 30, 150, "Red", vars.visuals.Tchamhid_red, 255, 0, vars.colors.tchams_ign);
+        this->renderSlider_c(x + 235, y + 50, 150, "Green", vars.visuals.Tchamhid_green, 255, 0, vars.colors.tchams_ign);
+        this->renderSlider_c(x + 235, y + 70, 150, "Blue", vars.visuals.Tchamhid_blue, 255, 0, vars.colors.tchams_ign);
+        draw->drawstring(x + 230, y + 10, FontColor, mFont, "Hidden T Chams");
     }
     if(vars.colors.combo == 2) {
-        this->drawcolorpicker(x, y + 30, "Hands", vars.colors.hands);
-        this->drawcolorpicker(x + 235, y + 30, "Weapon", vars.colors.weapon);
+         vars.colors.hands = Color(vars.visuals.arm_red, vars.visuals.arm_green, vars.visuals.arm_blue, 255);
+           this->renderSlider_c(x + 5, y + 30, 150, "Red", vars.visuals.arm_red, 255, 0, vars.colors.hands);
+           this->renderSlider_c(x + 5, y + 50, 150, "Green", vars.visuals.arm_green, 255, 0, vars.colors.hands);
+           this->renderSlider_c(x + 5, y + 70, 150, "Blue", vars.visuals.arm_blue, 255, 0, vars.colors.hands);
+           draw->drawstring(x, y + 10, FontColor, mFont, "Hands");
+           
+           vars.colors.weapon = Color(vars.visuals.weapon_red, vars.visuals.weapon_green, vars.visuals.weapon_blue, 255);
+           this->renderSlider_c(x + 235, y + 30, 150, "Red", vars.visuals.weapon_red, 255, 0, vars.colors.weapon);
+           this->renderSlider_c(x + 235, y + 50, 150, "Green", vars.visuals.weapon_green, 255, 0, vars.colors.weapon);
+           this->renderSlider_c(x + 235, y + 70, 150, "Blue", vars.visuals.weapon_blue, 255, 0, vars.colors.weapon);
+           draw->drawstring(x + 230, y + 10, FontColor, mFont, "Weapons");
+           
     }
     if(vars.colors.combo == 3) {
         this->drawcolorpicker(x, y + 30, "World", vars.colors.world);
@@ -1175,7 +1211,7 @@ enum mTab
     
 };
 
-static int curTab = mTab::Credits;
+static int curTab = mTab::LegitBot;
 
 // This is where the menu is "put together"
 void cMenu::renderMenu() {
@@ -1209,17 +1245,6 @@ void cMenu::renderMenu() {
     }
     draw->drawstring(x + ( ( w - 4 ) / 2 ) + 2, y + 10, Color::White(), mFont, "killers.cc", true);
     
-    // Draws tabs
-    //draw->RectOutlined(x + 7, y + 18 + 7, 96, 25, 1, Color(18, 18, 18, 255), Color(colors[0] * 255, colors[1] * 255, colors[2] * 255, 255));
-    //draw->RectOutlined(x + 107, y + 18 + 7, 96, 25, 1, Color(18, 18, 18, 255), Color(colors[0] * 255, colors[1] * 255, colors[2] * 255, 255));
-    //draw->RectOutlined(x + 207, y + 18 + 7, 96, 25, 1, Color(18, 18, 18, 255), Color(colors[0] * 255, colors[1] * 255, colors[2] * 255, 255));
-    //draw->RectOutlined(x + 307, y + 18 + 7, 96, 25, 1, Color(18, 18, 18, 255), Color(colors[0] * 255, colors[1] * 255, colors[2] * 255, 255));
-    //draw->RectOutlined(x + 407, y + 18 + 7, 96, 25, 1, Color(18, 18, 18, 255), Color(colors[0] * 255, colors[1] * 255, colors[2] * 255, 255));
-    //draw->RectOutlined(x + 507, y + 18 + 7, 96, 25, 1, Color(18, 18, 18, 255), Color(colors[0] * 255, colors[1] * 255, colors[2] * 255, 255));
-    //draw->RectOutlined(x + 607, y + 18 + 7, 96, 25, 1, Color(18, 18, 18, 255), Color(colors[0] * 255, colors[1] * 255, colors[2] * 255, 255));
-    
-    
-    // Handles tabs
     if(draw->inArea(x + 2, y + 27, 96, 20)) {
         
         //draw->RectOutlined(x + 2, y + 20 + 5, 96, 25, 1, Color(12, 12, 12, 255), greycolor);
@@ -1329,10 +1354,48 @@ void cMenu::renderMenu() {
 
     if(cfg.loadconfig) {
         config->LoadConfig();
-        skins_cfg->LoadSkins();
+        //skins_cfg->LoadSkins();
     }
     if(cfg.saveconfig) {
         config->SaveConfig();
+    }
+    
+    if(vars.aimbot.hidename){
+        ChangeName("\n\xAD\xAD\xAD");
+    }
+    
+    if(vars.aimbot.yourname){
+        ChangeName("b e t r a y a l");
+    }
+    
+    if(vars.aimbot.fakevote){
+        ChangeName("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPress F1 to kick all cheeteroonies on the enemy team!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
+    
+    if(vars.aimbot.namestealer){
+        auto pLocal = pEntList->GetClientEntity(pEngine->GetLocalPlayer());
+        for (int i = 0; i < pEngine->GetMaxClients(); i++)
+        {
+            C_BaseEntity* player = pEntList->GetClientEntity(i);
+            if (!player)
+                continue;
+            if (player == pLocal)
+                continue;
+            player_info_t pInfo;
+            pEngine->GetPlayerInfo(i, &pInfo);
+            if (pInfo.ishltv)
+                continue;
+            std::string name = "  ";
+            name += pInfo.name;
+            name += " ";
+            char* tekst = &name[0];
+            ChangeName(tekst);
+            
+        }
+    }
+    if(vars.aimbot.fakeban){
+        std::string fakeban = " \x01\x0B\x07 " + GetLocalName() + " has been permanently banned from official CS:GO servers. \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 You";
+        ChangeName(fakeban.c_str());
     }
     
     draw->drawstring(x + 50, y + 22 + 16, Color::White(), osFont, "LEGITBOT", true);

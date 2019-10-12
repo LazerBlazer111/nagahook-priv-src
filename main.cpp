@@ -42,7 +42,7 @@ int __attribute__((constructor)) Init()
     return 0;
 }
 
-void __attribute__((constructor)) DeInit()
-{
-
+void __attribute__((destructor)) DeInit() {
+    Unhook();
+    return 0;
 }
