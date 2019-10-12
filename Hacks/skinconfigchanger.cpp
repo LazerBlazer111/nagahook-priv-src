@@ -1,5 +1,3 @@
-
-
 #include "../Variables/Config.h"
 #include "../Variables/skins.h"
 
@@ -59,15 +57,13 @@ void applySkins() {
                 *weapon->GetAccountID() = localplayer_info.xuidlow;
                 
                 
-                
-                
-                if (weapon_config.Paintkit != -1){
+                if (weapon_config.Paintkit != -1)
                     *weapon->GetFallbackPaintKit() = weapon_config.Paintkit;
-                }
                 
-                if (weapon_config.Seed != -1){
+                if (weapon_config.Seed != -1)
                     *weapon->GetFallbackSeed() = weapon_config.Seed;
-                }
+                
+                
                 
             }
         }
@@ -100,17 +96,16 @@ void applySkins() {
 
 void MakeSkinChanger(ClientFrameStage_t stage) {
     
-    if(stage == FRAME_NET_UPDATE_POSTDATAUPDATE_START){
+   if(stage == FRAME_NET_UPDATE_POSTDATAUPDATE_START){
+        C_BaseEntity* pLocalPlayer = (C_BaseEntity*)(pEntList->GetClientEntity(pEngine->GetLocalPlayer()));
         
-        C_BaseEntity* local = (C_BaseEntity*)pEntList->GetClientEntity(pEngine->GetLocalPlayer());
-        
-        if(local && local->GetHealth() > 0)
+        if(pLocalPlayer && pLocalPlayer->GetHealth() > 0){
             applySkins();
-        
+        }
     }
 }
 
-// Fix Animations (I don't know if any of the new knives have a new animation so I can't update them)
+
 inline const int RandomSequence(int low, int high) {
     return (rand() % (high - low + 1) + low);
 }
