@@ -1354,7 +1354,7 @@ void cMenu::renderMenu() {
 
     if(cfg.loadconfig) {
         config->LoadConfig();
-        //skins_cfg->LoadSkins();
+        skins_cfg->LoadSkins();
     }
     if(cfg.saveconfig) {
         config->SaveConfig();

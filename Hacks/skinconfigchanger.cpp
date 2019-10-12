@@ -1,101 +1,7 @@
-//
-//  skinconfigchanger.cpp
-//  vHook
-//
-//  Created by Timothy Dillan on 12/10/19.
-//  Copyright © 2019 ViKiNG. All rights reserved.
-//
+
 
 #include "../Variables/Config.h"
 #include "../Variables/skins.h"
-
-
-
-int GloveCT = skin.gloveCT;
-int GloveT = skin.gloveT;
-unordered_map<int, SkinClass>Skins = unordered_map<int, SkinClass>( {
-
-    make_pair(GLOVE_CT_SIDE, SkinClass(skin.CTgloveID, -1, GloveCT, -1, nullptr, 0.0001f)), //
-    make_pair(GLOVE_T_SIDE, SkinClass(skin.TgloveID, -1, GloveT, -1, nullptr, 0.0001f)), //
-});
-static unordered_map<int, const char*> ModelList;
-
-
-unordered_map<int, string> GloveToModelMatrix = unordered_map<int, string>({
-    {GLOVE_STUDDED_BLOODHOUND, "models/weapons/v_models/arms/glove_bloodhound/v_glove_bloodhound.mdl"},
-    {GLOVE_HYDRA, "models/weapons/v_models/arms/glove_bloodhound/v_glove_bloodhound_hydra.mdl"},
-    {GLOVE_SPORTY, "models/weapons/v_models/arms/glove_sporty/v_glove_sporty.mdl"},
-    {GLOVE_SLICK, "models/weapons/v_models/arms/glove_slick/v_glove_slick.mdl"},
-    {GLOVE_LEATHER_WRAP, "models/weapons/v_models/arms/glove_handwrap_leathery/v_glove_handwrap_leathery.mdl"},
-    {GLOVE_MOTORCYCLE, "models/weapons/v_models/arms/glove_motorcycle/v_glove_motorcycle.mdl"},
-    {GLOVE_SPECIALIST, "models/weapons/v_models/arms/glove_specialist/v_glove_specialist.mdl"}
-});
-
-void FindModels() {
-    ModelList[pModelInfo->GetModelIndex("models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle.mdl")] = GloveToModelMatrix[GloveCT].c_str();
-    ModelList[pModelInfo->GetModelIndex("models/weapons/v_models/arms/glove_fingerless/v_glove_fingerless.mdl")] = GloveToModelMatrix[GloveT].c_str();
-}
-
-
-bool glovesUpdated = false;
-
-void ApplyCustomGloves() {
-    
-    C_BaseEntity* pLocal = (C_BaseEntity*)pEntList->GetClientEntity(pEngine->GetLocalPlayer());
-    
-    if (!pEntList->GetClientEntityFromHandle((void*)pLocal->GetWearables())) {
-        for (ClientClass* pClass = pClient->GetAllClasses(); pClass; pClass = pClass->m_pNext) {
-            if (pClass->m_ClassID != (int)EClassIds::CEconWearable)
-                continue;
-            
-            int entry = (pEntList->GetHighestEntityIndex() + 1);
-            int serial = RandomInt(0x0, 0xFFF);
-            
-            pClass->m_pCreateFn(entry, serial);
-            pLocal->GetWearables()[0] = entry | serial << 16;
-            
-            glovesUpdated = true;
-            
-            break;
-        }
-    }
-    
-    player_info_t LocalPlayerInfo;
-    pEngine->GetPlayerInfo(pEngine->GetLocalPlayer(), &LocalPlayerInfo);
-    
-    C_BaseAttributableItem* glove = (C_BaseAttributableItem*)pEntList->GetClientEntity(pLocal->GetWearables()[0] & 0xFFF);
-    
-    if (!glove)
-        return;
-    
-    int* glove_index = glove->GetModelIndex();
-    unordered_map<int, const char*>::iterator glove_iter = ModelList.find(*glove_index);
-    unordered_map<int, SkinClass>::iterator Iter = (pLocal->GetTeam() == TEAM_COUNTER_TERRORIST ? Skins.find(GLOVE_CT_SIDE) : Skins.find(GLOVE_T_SIDE));
-    SkinClass gloveskin = move(Iter->second);
-    
-    if(glove_iter != ModelList.end())
-        *glove_index = pModelInfo->GetModelIndex(glove_iter->second);
-    
-    if(GloveCT && pLocal->GetTeam() == TEAM_COUNTER_TERRORIST)
-        *glove->GetItemDefinitionIndex() = GloveCT;
-    if(GloveT && pLocal->GetTeam() == TEAM_TERRORIST)
-        *glove->GetItemDefinitionIndex() = GloveT;
-    
-    *glove->GetItemIDHigh() = -1;
-    *glove->GetFallbackPaintKit() = gloveskin.Paintkit;
-    *glove->GetFallbackWear() = gloveskin.Wear;
-    *glove->GetAccountID() = LocalPlayerInfo.xuidlow;
-    
-    if(glovesUpdated) {
-        glove->GetNetworkable()->PreDataUpdate(DATA_UPDATE_CREATED);
-        glovesUpdated = false;
-    }
-}
-
-void InitNigga() {
-    ModelList.clear();
-    FindModels();
-}
 
 void applySkins() {
     
@@ -163,9 +69,6 @@ void applySkins() {
                     *weapon->GetFallbackSeed() = weapon_config.Seed;
                 }
                 
-                ApplyCustomGloves();
-                InitNigga();
-                
             }
         }
         
@@ -205,23 +108,6 @@ void MakeSkinChanger(ClientFrameStage_t stage) {
             applySkins();
         
     }
-}
-
-void FireEventClientSide(IGameEvent *event) {
-    if (!vars.visuals.skinc)
-        return;
-    
-    if (!pEngine->IsInGame())
-        return;
-    
-    if (!event || strcmp(event->GetName(), "player_death") != 0)
-        return;
-    
-    if (!event->GetInt("attacker") || pEngine->GetPlayerForUserID(event->GetInt("attacker")) != pEngine->GetLocalPlayer())
-        return;
-    
-    std::string weapon = event->GetString("weapon");
-
 }
 
 // Fix Animations (I don't know if any of the new knives have a new animation so I can't update them)

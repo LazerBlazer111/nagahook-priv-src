@@ -1,5 +1,6 @@
 #include "main.h"
 #include "../Hacks/skinconfigchanger.hpp"
+#include "../Hacks/skinchanger.hpp"
 #include "asuswalls.h"
 #include "../Backtrack.hpp"
 #include "../Hacks/nosmoke.hpp"
@@ -109,6 +110,7 @@ void hkFrameStage(void* thisptr, ClientFrameStage_t curStage)
     
     if(vars.visuals.skinc) {
          MakeSkinChanger(curStage);
+        skinchanger->FrameStageNotify(curStage);
     }
     
     

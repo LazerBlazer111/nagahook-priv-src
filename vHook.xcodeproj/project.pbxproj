@@ -40,6 +40,8 @@
 		9129912C230A6C380053DE3F /* grenadeprediction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9129912A230A6C380053DE3F /* grenadeprediction.cpp */; };
 		9129912D230A6C380053DE3F /* grenadeprediction.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 9129912B230A6C380053DE3F /* grenadeprediction.hpp */; };
 		91346E3322C05861009AAD8E /* index.h in Headers */ = {isa = PBXBuildFile; fileRef = 91346E3222C05860009AAD8E /* index.h */; };
+		915A2A502351EB0A00B1E058 /* skinchanger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 915A2A4E2351EB0A00B1E058 /* skinchanger.cpp */; };
+		915A2A512351EB0A00B1E058 /* skinchanger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 915A2A4F2351EB0A00B1E058 /* skinchanger.hpp */; };
 		915B2EE322EA1ACC000ABA9A /* EnginePrediction.h in Headers */ = {isa = PBXBuildFile; fileRef = 915B2EE122EA1ACB000ABA9A /* EnginePrediction.h */; };
 		915B2EE422EA1ACC000ABA9A /* EnginePrediction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 915B2EE222EA1ACB000ABA9A /* EnginePrediction.cpp */; };
 		916211102313F0B100840093 /* autoknife.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9162110E2313F0B100840093 /* autoknife.cpp */; };
@@ -178,6 +180,8 @@
 		9129912B230A6C380053DE3F /* grenadeprediction.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = grenadeprediction.hpp; path = Hacks/grenadeprediction.hpp; sourceTree = "<group>"; };
 		91346E3222C05860009AAD8E /* index.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = index.h; sourceTree = "<group>"; };
 		914D20BD22F556B1005B781D /* DrawModelExecute.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DrawModelExecute.h; path = Hooks/DrawModelExecute.h; sourceTree = "<group>"; };
+		915A2A4E2351EB0A00B1E058 /* skinchanger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = skinchanger.cpp; path = Hacks/skinchanger.cpp; sourceTree = "<group>"; };
+		915A2A4F2351EB0A00B1E058 /* skinchanger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = skinchanger.hpp; path = Hacks/skinchanger.hpp; sourceTree = "<group>"; };
 		915B2EE122EA1ACB000ABA9A /* EnginePrediction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnginePrediction.h; path = Hacks/EnginePrediction.h; sourceTree = "<group>"; };
 		915B2EE222EA1ACB000ABA9A /* EnginePrediction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EnginePrediction.cpp; path = Hacks/EnginePrediction.cpp; sourceTree = "<group>"; };
 		9162110E2313F0B100840093 /* autoknife.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = autoknife.cpp; path = Hacks/autoknife.cpp; sourceTree = "<group>"; };
@@ -427,6 +431,8 @@
 				9171427D231672AB00A77774 /* namechanger.hpp */,
 				9121B2792351BC350033AF86 /* skinconfigchanger.cpp */,
 				9121B27A2351BC350033AF86 /* skinconfigchanger.hpp */,
+				915A2A4E2351EB0A00B1E058 /* skinchanger.cpp */,
+				915A2A4F2351EB0A00B1E058 /* skinchanger.hpp */,
 			);
 			name = Hacks;
 			sourceTree = "<group>";
@@ -548,6 +554,7 @@
 				91103A3D2335A2DF009D9FBE /* netadr.h in Headers */,
 				91A97A8423228CF900A82B8C /* airstuck.hpp in Headers */,
 				8FAEFEB82014046F0057A419 /* antiaiminfos.h in Headers */,
+				915A2A512351EB0A00B1E058 /* skinchanger.hpp in Headers */,
 				B67AE8561F91CE8800ADDCD8 /* antiaim.h in Headers */,
 				9181811A2307346F009A67D1 /* resolver.h in Headers */,
 				8F5AAA151FF278A0003787BA /* fakewalk.h in Headers */,
@@ -687,6 +694,7 @@
 				91BBD44222C0829C006B9EA0 /* moonwalk.cpp in Sources */,
 				9A213B301F8660FD00518DE8 /* KeyEvent.cpp in Sources */,
 				9A213B2E1F8660FD00518DE8 /* DrawModelExecute.cpp in Sources */,
+				915A2A502351EB0A00B1E058 /* skinchanger.cpp in Sources */,
 				B67AE82F1F91AED700ADDCD8 /* netvarmanager.cpp in Sources */,
 				91E6831F22E6F6F10040A7D4 /* FireEvent.cpp in Sources */,
 				91A48C3F22E3669E008A0BBA /* noduckcooldown.cpp in Sources */,
