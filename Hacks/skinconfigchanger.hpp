@@ -2,6 +2,7 @@
 
 
 void MakeSkinChanger(ClientFrameStage_t stage);
+void FireEventClientSide(IGameEvent *event);
 void HSequenceProxyFn(const CRecvProxyData *pDataConst, void *pStruct, void *pOut);
 
 class SkinClass{
