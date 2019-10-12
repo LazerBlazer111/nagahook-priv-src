@@ -1018,11 +1018,11 @@ bool Config::HasWeaponConfiguration(const char* section) {
 }
 
 
-SkinClass Config::GetWeaponConfiguration(const char *section) {
+cSkin Config::GetWeaponConfiguration(const char *section) {
     
     skins_cfg.LoadFile(skins.c_str());
     
-    SkinClass weapon_config;
+    cSkin weapon_config;
     
     weapon_config.Paintkit      = (int)skin_cfgget_f(section, "id");
     weapon_config.Seed          = (int)skin_cfgget_f(section, "seed");

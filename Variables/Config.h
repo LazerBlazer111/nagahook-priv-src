@@ -70,7 +70,7 @@ public:
     void LoadSkins();
     void InitSkins();
     void UpdateSkins();
-    SkinClass GetWeaponConfiguration(const char *section);
+    cSkin GetWeaponConfiguration(const char *section);
     
     bool HasWeaponConfiguration(const char* section);
     void getConfig(int ConfigNo);

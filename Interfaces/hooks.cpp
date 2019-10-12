@@ -1,5 +1,5 @@
 #include "main.h"
-#include "../Hacks/skinconfigchanger.hpp"
+#include "skinconfigchanger.hpp"
 #include "index.h"
 #include "../EventListener.h"
 EventListener* eventlistener = nullptr;

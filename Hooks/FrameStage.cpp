@@ -108,7 +108,7 @@ void hkFrameStage(void* thisptr, ClientFrameStage_t curStage)
     }
     
     if(vars.visuals.skinc) {
-         MakeSkinChanger(curStage);
+        skinchanger->FrameStageNotify(curStage);
     }
     
     

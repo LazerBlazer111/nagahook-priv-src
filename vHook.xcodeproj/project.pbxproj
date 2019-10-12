@@ -35,6 +35,8 @@
 		91103A3D2335A2DF009D9FBE /* netadr.h in Headers */ = {isa = PBXBuildFile; fileRef = 91103A3C2335A2DE009D9FBE /* netadr.h */; };
 		91216B9122C777810042172E /* triggerbot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 91216B8F22C777810042172E /* triggerbot.cpp */; };
 		91216B9222C777810042172E /* triggerbot.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 91216B9022C777810042172E /* triggerbot.hpp */; };
+		9121B27B2351BC350033AF86 /* skinconfigchanger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9121B2792351BC350033AF86 /* skinconfigchanger.cpp */; };
+		9121B27C2351BC350033AF86 /* skinconfigchanger.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 9121B27A2351BC350033AF86 /* skinconfigchanger.hpp */; };
 		9129912C230A6C380053DE3F /* grenadeprediction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9129912A230A6C380053DE3F /* grenadeprediction.cpp */; };
 		9129912D230A6C380053DE3F /* grenadeprediction.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 9129912B230A6C380053DE3F /* grenadeprediction.hpp */; };
 		91346E3322C05861009AAD8E /* index.h in Headers */ = {isa = PBXBuildFile; fileRef = 91346E3222C05860009AAD8E /* index.h */; };
@@ -170,6 +172,8 @@
 		911A997D22F27EE4005DE75B /* animstate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = animstate.h; path = SDK/animstate.h; sourceTree = "<group>"; };
 		91216B8F22C777810042172E /* triggerbot.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = triggerbot.cpp; path = Hacks/triggerbot.cpp; sourceTree = "<group>"; };
 		91216B9022C777810042172E /* triggerbot.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = triggerbot.hpp; path = Hacks/triggerbot.hpp; sourceTree = "<group>"; };
+		9121B2792351BC350033AF86 /* skinconfigchanger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = skinconfigchanger.cpp; path = Hacks/skinconfigchanger.cpp; sourceTree = "<group>"; };
+		9121B27A2351BC350033AF86 /* skinconfigchanger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = skinconfigchanger.hpp; path = Hacks/skinconfigchanger.hpp; sourceTree = "<group>"; };
 		9129912A230A6C380053DE3F /* grenadeprediction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = grenadeprediction.cpp; path = Hacks/grenadeprediction.cpp; sourceTree = "<group>"; };
 		9129912B230A6C380053DE3F /* grenadeprediction.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = grenadeprediction.hpp; path = Hacks/grenadeprediction.hpp; sourceTree = "<group>"; };
 		91346E3222C05860009AAD8E /* index.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = index.h; sourceTree = "<group>"; };
@@ -421,6 +425,8 @@
 				916211152313F5B800840093 /* autoblock.hpp */,
 				9171427C231672AB00A77774 /* namechanger.cpp */,
 				9171427D231672AB00A77774 /* namechanger.hpp */,
+				9121B2792351BC350033AF86 /* skinconfigchanger.cpp */,
+				9121B27A2351BC350033AF86 /* skinconfigchanger.hpp */,
 			);
 			name = Hacks;
 			sourceTree = "<group>";
@@ -597,6 +603,7 @@
 				B67AE84E1F91CD8200ADDCD8 /* menu.h in Headers */,
 				8F4E12ED200FCAEA000F17A0 /* Config.h in Headers */,
 				E1FE19CB1E718F020018D409 /* IPanel.h in Headers */,
+				9121B27C2351BC350033AF86 /* skinconfigchanger.hpp in Headers */,
 				E1FE19C71E718F020018D409 /* ICvar.h in Headers */,
 				91B170B023011837003AF2E2 /* dlights.hpp in Headers */,
 				B67AE8461F91B20100ADDCD8 /* drawings.h in Headers */,
@@ -676,6 +683,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1FE19D11E718F020018D409 /* offsets.cpp in Sources */,
+				9121B27B2351BC350033AF86 /* skinconfigchanger.cpp in Sources */,
 				91BBD44222C0829C006B9EA0 /* moonwalk.cpp in Sources */,
 				9A213B301F8660FD00518DE8 /* KeyEvent.cpp in Sources */,
 				9A213B2E1F8660FD00518DE8 /* DrawModelExecute.cpp in Sources */,
