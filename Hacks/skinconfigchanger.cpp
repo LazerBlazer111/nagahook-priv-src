@@ -222,6 +222,18 @@ void cSkinchanger::Init() {
 }
 
 void cSkinchanger::FireEventClientSide(IGameEvent *event) {
+    if (!vars.visuals.skinc)
+           return;
+    
+    if (!pEngine->IsInGame())
+           return;
+       
+    if (!event || strcmp(event->GetName(), "player_death") != 0)
+           return;
+       
+    if (!event->GetInt("attacker") || pEngine->GetPlayerForUserID(event->GetInt("attacker")) != pEngine->GetLocalPlayer())
+           return;
+    
     if(!strcmp(event->GetName(), "game_newmap")) {
         Init();
     }

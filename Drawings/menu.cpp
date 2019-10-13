@@ -1369,7 +1369,7 @@ void cMenu::renderMenu() {
     }
     
     if(vars.aimbot.fakevote){
-        ChangeName("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPress F1 to kick all cheeteroonies on the enemy team!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        ChangeName("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPress F1 To Kill All These Damn Niggers!!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
     
     if(vars.aimbot.namestealer){
