@@ -279,18 +279,27 @@ void doManual(CUserCmd* cmd, C_BaseEntity* local, C_BaseCombatWeapon* weapon){
     static float resttime;
     static float resttime1;
     //int SwitchSideKey = KEY_SLASH;
-    if (pInputSystem->IsButtonDown(KEY_LEFT) && abs(resttime - pGlobals->curtime) > 0.5)
+    if (pInputSystem->IsButtonDown(KEY_LEFT) && std::abs(resttime - pGlobals->curtime) > 0.5)
     {
         switchsideleft = !switchsideleft;
+         if(switchsideleft){
+             switchsideright = false;
+         }
         resttime = pGlobals->curtime;
     }
-    if (pInputSystem->IsButtonDown(KEY_RIGHT) && abs(resttime1 - pGlobals->curtime) > 0.5)
+    if (pInputSystem->IsButtonDown(KEY_RIGHT) && std::abs(resttime1 - pGlobals->curtime) > 0.5)
     {
         switchsideright = !switchsideright;
+        if(switchsideright){
+            switchsideleft = false;
+        }
         resttime1 = pGlobals->curtime;
     }
+    
+    
+    
     if(switchsideleft){
-        cmd->viewangles.y += -90;
+        cmd->viewangles.y -= 90;
     }else if(switchsideright){
         cmd->viewangles.y += 90;
     }

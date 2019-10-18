@@ -10,7 +10,7 @@ void InitializeInterfaces()
 {
     pSurface        = GetInterface<ISurface>("./bin/osx64/vguimatsurface.dylib", "VGUI_Surface");
     pPanel          = GetInterface<IPanel>("./bin/osx64/vgui2.dylib", "VGUI_Panel");
-    pEffects        = GetInterface<CEffects>("./bin/osx64/engine.dylib", "VEngineEffects"); 
+    pEffects        = GetInterface<CEffects>("./bin/osx64/engine.dylib", "VEngineEffects");
     pCvar           = GetInterface<ICvar>("./bin/osx64/materialsystem.dylib", "VEngineCvar");
     pClient         = GetInterface<IBaseClientDLL>("./csgo/bin/osx64/client_panorama.dylib", "VClient");
     pEngine         = GetInterface<IEngineClient>("./bin/osx64/engine.dylib", "VEngineClient");
@@ -30,7 +30,8 @@ void InitializeInterfaces()
     
     
 }
-uintptr_t Offsets::playerAnimStateOffset = *reinterpret_cast<uint32_t*>(CPatternScanner::Instance()->GetProcedure("client_panorama.dylib", (unsigned char*)"\x48\x8B\xBB\x00\x00\x00\x00\x48\x85\xFF\x74\x41\xE8\x00\x00\x00\x00\x4C", "xxx????xxxxxx????x", 0) +3);
+
+uintptr_t Offsets::playerAnimStateOffset = *reinterpret_cast<uint32_t*>(CPatternScanner::Instance()->GetProcedure("client_panorama.dylib", (unsigned char*)SIG_ANIM_STATE_OFFSET, MSK_ANIM_STATE_OFFSET, 0) + 0x3);
 
 void ProtectAddr(void* addr, int prot)
 {
@@ -43,7 +44,6 @@ void InitializeVMTs()
 {
     uintptr_t findClientMode = CPatternScanner::Instance()->GetPointer("client_panorama.dylib",(unsigned char*)CLIENTMODE_SIG, CLIENTMODE_MASK, 0xA) + 0x4;
     uintptr_t findGlobalVars = CPatternScanner::Instance()->GetPointer("client_panorama.dylib", (unsigned char*)GLOBALS_SIG, GLOBALS_MASK, 0x3) + 0x4;
-   // uintptr_t viewrenderPtr = CPatternScanner::Instance()->GetProcedure("client_panorama.dylib", (unsigned char*)VIEWRENDER_SIG, VIEWREDNER_MASK);
     uintptr_t findRankReveal = CPatternScanner::Instance()->GetPointer("client_panorama.dylib",(unsigned char*)RANKREVEAL_SIG, RANKREVEAL_MASK, 0x15) + 0x4;
     uintptr_t findClanTag    = CPatternScanner::Instance()->GetPointer("engine.dylib", (unsigned char*) CLANTAG_SIG, CLANTAG_MASK, 0xB) + 0x4;
     uintptr_t sendPacketPtr =  CPatternScanner::Instance()->GetProcedure("engine.dylib", (unsigned char*)SENDPACKET_SIG, SENDPACKET_MASK, 0x1) + 0x2;
@@ -52,7 +52,7 @@ void InitializeVMTs()
 
     
     bSendPacket = reinterpret_cast<bool*>(sendPacketPtr);
-    ProtectAddr(bSendPacket, 0x1 | 0x2 | 0x4);
+    ProtectAddr(bSendPacket, PROT_READ | PROT_WRITE | PROT_EXEC);
     pInput = *reinterpret_cast<CInput**>(GetAbsoluteAddress(getvfunc<uintptr_t>(pClient, 16) + 4, 3, 7));
     
     void* handle = dlopen("./csgo/bin/osx64/client_panorama.dylib", RTLD_NOLOAD | RTLD_NOW);

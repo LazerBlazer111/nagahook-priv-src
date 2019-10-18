@@ -82,14 +82,20 @@ void manualaa(C_BaseEntity* Local, int keynum)
        static float resttime;
        static float resttime1;
        //int SwitchSideKey = KEY_SLASH;
-       if (pInputSystem->IsButtonDown(KEY_LEFT) && abs(resttime - pGlobals->curtime) > 0.5)
+    if (pInputSystem->IsButtonDown(KEY_LEFT) && std::abs(resttime - pGlobals->curtime) > 0.5)
        {
            switchsideleft = !switchsideleft;
+           if(switchsideleft){
+           switchsideright = false;
+           }
            resttime = pGlobals->curtime;
        }
-       if (pInputSystem->IsButtonDown(KEY_RIGHT) && abs(resttime1 - pGlobals->curtime) > 0.5)
+    if (pInputSystem->IsButtonDown(KEY_RIGHT) && std::abs(resttime1 - pGlobals->curtime) > 0.5)
        {
            switchsideright = !switchsideright;
+           if(switchsideright){
+           switchsideleft = false;
+           }
            resttime1 = pGlobals->curtime;
        }
     
