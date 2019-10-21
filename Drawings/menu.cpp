@@ -872,7 +872,7 @@ void cMenu::renderVis(int x, int y) {
     this->renderCheckbox(x + 444, y + 115, "Hitmarker Allies", &vars.visuals.allieshit);
     this->renderCheckbox(x + 444, y + 135, "Hitmarker Enemies", &vars.visuals.enemyhit);
     this->renderCheckbox(x + 444, y + 155, "Left-Hand Knife", &vars.visuals.inverseragdoll);
-    this->renderCheckbox(x + 444, y + 175, "Sniper Crosshair", &vars.misc.snipercrosshair);
+    this->renderCheckbox(x + 444, y + 175, "Bullet Impact", &vars.visuals.bullettimpact);
     
     this->renderCheckbox(x + 444, y + 195, "Enemy Event Log", &vars.misc.showenemieslog);
     this->renderCheckbox(x + 444, y + 215, "Allies Event Log", &vars.misc.showallieslog);
