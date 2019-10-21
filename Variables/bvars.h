@@ -242,7 +242,7 @@ public:
         bool active    = true;
         float edge_distance = 25.f;
         bool edge    = false;
-        
+        bool bullettimpact = false;
         
         
         
