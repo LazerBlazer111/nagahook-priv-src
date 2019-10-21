@@ -158,13 +158,11 @@ void BulletTracers::Paint(void)
         auto current = logs.at(i);
         
         //draw a line from local player's head position to the hit point
-        if (!vars.visuals.bullett){
-        pOverlay->AddLineOverlay(current.src, current.dst, current.color.r(), current.color.g(), current.color.b(), true, 1.f);
+        if (vars.visuals.bullett){
+            pOverlay->AddLineOverlay(current.src, current.dst, current.color.r(), current.color.g(), current.color.b(), true, 1.f);
+        }else if (vars.visuals.bullettimpact || vars.visuals.bullett){
+            pOverlay->AddBoxOverlay(current.dst, Vector(-2, -2, -2), Vector(2, 2, 2), QAngle(0, 0, 0), 255, 0, 0, 127, 1.f);
         }
-        //draw a box at the hit point
-         if (!vars.visuals.bullettimpact){
-        pOverlay->AddBoxOverlay(current.dst, Vector(-2, -2, -2), Vector(2, 2, 2), QAngle(0, 0, 0), 255, 0, 0, 127, 1.f);
-         }
         //if the item is older than 5 seconds, delete it
         if (fabs(pGlobals->curtime - current.time) > 5.f)
             logs.erase(logs.begin() + i);
